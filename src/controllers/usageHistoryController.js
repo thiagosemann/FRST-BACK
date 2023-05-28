@@ -23,7 +23,8 @@ const getAllUsageHistory = async (req, res) => {
 
 const createUsageHistory = async (req, res) => {
   try {
-    const newUsage = await UsageHistory.createUsageHistory(req.body);
+    const { user_id, machine_id, start_time } = req.body;
+    const newUsage = await UsageHistory.createUsageHistory({ user_id, machine_id, start_time });
     res.status(201).json(newUsage);
   } catch (err) {
     res.status(500).json({ message: err.message });

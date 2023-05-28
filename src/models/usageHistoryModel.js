@@ -11,10 +11,15 @@ const getAllUsageHistory = async () => {
 };
 
 const createUsageHistory = async (usage) => {
-  const { user_id, machine_id, start_time, end_time, total_cost } = usage;
-  const query = 'INSERT INTO UsageHistory (user_id, machine_id, start_time, end_time, total_cost) VALUES (?, ?, ?, ?, ?)';
-  const [result] = await connection.execute(query, [user_id, machine_id, start_time, end_time, total_cost]);
-  return { insertId: result.insertId };
+  try {
+    const { user_id, machine_id, start_time } = usage;
+    const query = 'INSERT INTO UsageHistory (user_id, machine_id, start_time) VALUES (?, ?, ?)';
+    const [result] = await connection.execute(query, [user_id, machine_id, start_time]);
+    return { insertId: result.insertId };
+  } catch (err) {
+    console.error('Error creating usage history:', err);
+    throw new Error('Failed to create usage history');
+  }
 };
 
 module.exports = {

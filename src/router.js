@@ -10,7 +10,6 @@ const transactionsController = require('./controllers/transactionController');
 const usersMiddleware = require('./middlewares/usersMiddleware');
 const validateMachine = require('./middlewares/machinesMiddleware');
 const validateBuilding = require('./middlewares/buildingsMiddleware');
-const validateUsageHistory = require('./middlewares/usageHistoryMiddleware');
 const validateTransaction = require('./middlewares/transactionMiddleware');
 const verifyToken = require('./middlewares/authMiddleware');
 
@@ -24,7 +23,11 @@ router.post('/users', usersMiddleware.validateUser, usersController.createUser);
 
 // Machine routes
 router.get('/machines', verifyToken, machinesController.getAllMachines);
+router.get('/machines/:id', verifyToken, machinesController.getMachineById);  // Rota para pegar máquina pelo ID
+router.get('/machines/building/:building_id', verifyToken, machinesController.getMachinesByBuilding);
+
 router.post('/machines', verifyToken, validateMachine, machinesController.createMachine);
+router.put('/machines/:id', verifyToken, machinesController.updateMachineStatus); // Rota para atualizar o status da máquina
 
 // Building routes
 router.get('/buildings', verifyToken, buildingsController.getAllBuildings);
@@ -33,7 +36,7 @@ router.post('/buildings', verifyToken, validateBuilding, buildingsController.cre
 // UsageHistory routes
 router.get('/usageHistory/user/:id', verifyToken, usageHistoryController.getUserUsageHistory);
 router.get('/usageHistory', verifyToken, usageHistoryController.getAllUsageHistory);
-router.post('/usageHistory', verifyToken, validateUsageHistory, usageHistoryController.createUsageHistory);
+router.post('/usageHistory', verifyToken, usageHistoryController.createUsageHistory);
 
 // Transaction routes
 router.get('/transactions', verifyToken, transactionsController.getAllTransactions);
