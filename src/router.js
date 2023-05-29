@@ -35,7 +35,9 @@ router.post('/buildings', verifyToken, validateBuilding, buildingsController.cre
 
 // UsageHistory routes
 router.get('/usageHistory/user/:id', verifyToken, usageHistoryController.getUserUsageHistory);
+router.get('/usageHistory/machine/:id', verifyToken, usageHistoryController.getMachineUsageHistory);
 router.get('/usageHistory', verifyToken, usageHistoryController.getAllUsageHistory);
+
 router.post('/usageHistory', verifyToken, usageHistoryController.createUsageHistory);
 
 // Transaction routes

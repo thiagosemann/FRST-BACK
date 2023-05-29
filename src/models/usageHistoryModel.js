@@ -21,9 +21,16 @@ const createUsageHistory = async (usage) => {
     throw new Error('Failed to create usage history');
   }
 };
+const getAllUsageHistoryByMachine = async (machineId) => {
+  const [rows] = await connection.execute('SELECT * FROM UsageHistory WHERE machine_id = ?', [machineId]);
+  return rows;
+};
+
+
 
 module.exports = {
   getAllUsageHistoryByUser,
   getAllUsageHistory,
-  createUsageHistory
+  createUsageHistory,
+  getAllUsageHistoryByMachine,
 };

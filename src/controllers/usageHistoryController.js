@@ -30,9 +30,22 @@ const createUsageHistory = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+const getMachineUsageHistory = async (req, res) => {
+  try {
+    const machineId = req.params.id;
+    const usageHistory = await UsageHistory.getAllUsageHistoryByMachine(machineId);
+    res.json(usageHistory);
+  } catch (error) {
+    console.error('Error getting machine usage history:', error);
+    res.status(500).json({ error: 'Failed to get machine usage history' });
+  }
+};
+
 
 module.exports = {
   getUserUsageHistory,
   getAllUsageHistory,
-  createUsageHistory
+  createUsageHistory,
+  getMachineUsageHistory,
+  
 };

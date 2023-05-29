@@ -1,6 +1,9 @@
-const app = require ('./app')
+const app = require('./app');
 require('dotenv').config();
 
-
 const PORT = process.env.PORT || 3333;
-app.listen(PORT, () => console.log('Server running on port',PORT));
+const HOST = '0.0.0.0'; // Escuta em todas as interfaces de rede
+
+app.listen(PORT, HOST, () => {
+  console.log('Server running on', HOST + ':' + PORT);
+});
