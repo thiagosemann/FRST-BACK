@@ -41,11 +41,22 @@ const getMachineUsageHistory = async (req, res) => {
   }
 };
 
+const updateUsageHistory = async (req, res) => {
+  try {
+    const { id, end_time, total_cost } = req.body;
+    const updatedUsage = await UsageHistory.updateUsageHistory({ id, end_time, total_cost });
+    res.json(updatedUsage);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 module.exports = {
   getUserUsageHistory,
   getAllUsageHistory,
   createUsageHistory,
   getMachineUsageHistory,
+  updateUsageHistory
   
 };

@@ -18,5 +18,16 @@ exports.createBuilding = async (req, res) => {
   }
 };
 
-
+exports.getBuildingById = async (req, res) => {
+  try {
+    const building = await Building.getBuildingById(req.params.id);
+    if (building) {
+      res.json(building);
+    } else {
+      res.status(404).json({ message: "Building not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 

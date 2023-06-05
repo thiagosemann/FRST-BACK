@@ -26,6 +26,17 @@ const getAllUsageHistoryByMachine = async (machineId) => {
   return rows;
 };
 
+const updateUsageHistory = async (usageHistory) => {
+  try {
+    const { id, end_time, total_cost } = usageHistory;
+    const query = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
+    await connection.execute(query, [end_time, total_cost, id]);
+    return { id, end_time, total_cost };
+  } catch (err) {
+    console.error('Error updating usage history:', err);
+    throw new Error('Failed to update usage history');
+  }
+};
 
 
 module.exports = {
@@ -33,4 +44,5 @@ module.exports = {
   getAllUsageHistory,
   createUsageHistory,
   getAllUsageHistoryByMachine,
+  updateUsageHistory
 };

@@ -31,6 +31,8 @@ router.put('/machines/:id', verifyToken, machinesController.updateMachineStatus)
 
 // Building routes
 router.get('/buildings', verifyToken, buildingsController.getAllBuildings);
+router.get('/buildings/:id',verifyToken, buildingsController.getBuildingById);  // adicione isto
+
 router.post('/buildings', verifyToken, validateBuilding, buildingsController.createBuilding);
 
 // UsageHistory routes
@@ -39,6 +41,7 @@ router.get('/usageHistory/machine/:id', verifyToken, usageHistoryController.getM
 router.get('/usageHistory', verifyToken, usageHistoryController.getAllUsageHistory);
 
 router.post('/usageHistory', verifyToken, usageHistoryController.createUsageHistory);
+router.put('/usageHistory/:id',verifyToken, usageHistoryController.updateUsageHistory);
 
 // Transaction routes
 router.get('/transactions', verifyToken, transactionsController.getAllTransactions);

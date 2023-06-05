@@ -59,8 +59,7 @@ const loginUser = async (email, password) => {
       // Senha está correta
       const token = jwt.sign(
         { id: user.id, email: user.email },
-        SECRET_KEY,
-        { expiresIn: '1h' }
+        SECRET_KEY
       );
       return { user, token };
     }

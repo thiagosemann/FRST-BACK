@@ -12,7 +12,13 @@ const createBuilding = async (building) => {
   return { insertId: result.insertId };
 };
 
+const getBuildingById = async (id) => {
+  const [building] = await connection.execute('SELECT * FROM Buildings WHERE id = ?', [id]);
+  return building[0];
+};
+
 module.exports = {
   getAllBuildings,
-  createBuilding
+  createBuilding,
+  getBuildingById
 };
