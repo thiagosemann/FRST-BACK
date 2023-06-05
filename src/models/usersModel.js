@@ -66,11 +66,21 @@ const loginUser = async (email, password) => {
   }
 };
 
+const getUser = async (id) => {
+  const query = 'SELECT * FROM users WHERE id = ?';
+  const [users] = await connection.execute(query, [id]);
 
+  if (users.length > 0) {
+    return users[0];
+  } else {
+    return null;
+  }
+};
 
 
 module.exports = {
   getAllUsers,
   createUser,
   loginUser,
+  getUser
 };
