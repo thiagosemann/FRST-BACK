@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { wss, connections } = require('./websocket');
 
 const usersController = require('./controllers/usersController');
 const machinesController = require('./controllers/machinesController');
@@ -13,6 +14,9 @@ const validateBuilding = require('./middlewares/buildingsMiddleware');
 const validateTransaction = require('./middlewares/transactionMiddleware');
 const verifyToken = require('./middlewares/authMiddleware');
 
+
+
+
 // User routes
 router.get('/users', verifyToken, usersController.getAllUsers);
 router.get('/users/:id', verifyToken, usersController.getUser);
@@ -23,15 +27,15 @@ router.post('/users', usersMiddleware.validateUser, usersController.createUser);
 
 // Machine routes
 router.get('/machines', verifyToken, machinesController.getAllMachines);
-router.get('/machines/:id', verifyToken, machinesController.getMachineById);  // Rota para pegar máquina pelo ID
+router.get('/machines/:id', verifyToken, machinesController.getMachineById);
 router.get('/machines/building/:building_id', verifyToken, machinesController.getMachinesByBuilding);
 
 router.post('/machines', verifyToken, validateMachine, machinesController.createMachine);
-router.put('/machines/:id', verifyToken, machinesController.updateMachineStatus); // Rota para atualizar o status da máquina
+router.put('/machines/:id', verifyToken, machinesController.updateMachineStatus);
 
 // Building routes
 router.get('/buildings', verifyToken, buildingsController.getAllBuildings);
-router.get('/buildings/:id',verifyToken, buildingsController.getBuildingById);  // adicione isto
+router.get('/buildings/:id', verifyToken, buildingsController.getBuildingById);
 
 router.post('/buildings', verifyToken, validateBuilding, buildingsController.createBuilding);
 
@@ -41,10 +45,32 @@ router.get('/usageHistory/machine/:id', verifyToken, usageHistoryController.getM
 router.get('/usageHistory', verifyToken, usageHistoryController.getAllUsageHistory);
 
 router.post('/usageHistory', verifyToken, usageHistoryController.createUsageHistory);
-router.put('/usageHistory/:id',verifyToken, usageHistoryController.updateUsageHistory);
+router.put('/usageHistory/:id', verifyToken, usageHistoryController.updateUsageHistory);
 
 // Transaction routes
 router.get('/transactions', verifyToken, transactionsController.getAllTransactions);
 router.post('/transactions', verifyToken, validateTransaction, transactionsController.createTransaction);
+
+// Rota para enviar uma mensagem para a conexão ativa
+router.get('/nodemcu/:id', (req, res) => {
+  const nodeId = req.params.id; // Obter o ID do NodeMCU a partir dos parâmetros de rota
+
+  // Verifique se há conexões ativas
+  const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
+
+  if (targetConnection) {
+    const binaryMessage = Buffer.from([0x03]); // Exemplo de mensagem binária
+
+    targetConnection.ws.send(binaryMessage);
+
+    res.status(200).json({ success: true, message: 'A rota foi acessada com sucesso' });
+  } else {
+    res.status(400).json({ success: false, message: 'Nenhuma conexão ativa encontrada para o NodeMCU especificado' });
+  }
+});
+
+
+
+
 
 module.exports = router;
