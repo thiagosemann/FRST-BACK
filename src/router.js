@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { wss, connections } = require('./websocket');
 
 const usersController = require('./controllers/usersController');
 const machinesController = require('./controllers/machinesController');
 const buildingsController = require('./controllers/buildingsController');
 const usageHistoryController = require('./controllers/usageHistoryController');
 const transactionsController = require('./controllers/transactionController');
+const nodemcuController = require('./controllers/nodemcuController');
 
 const usersMiddleware = require('./middlewares/usersMiddleware');
 const validateMachine = require('./middlewares/machinesMiddleware');
@@ -51,24 +51,11 @@ router.put('/usageHistory/:id', verifyToken, usageHistoryController.updateUsageH
 router.get('/transactions', verifyToken, transactionsController.getAllTransactions);
 router.post('/transactions', verifyToken, validateTransaction, transactionsController.createTransaction);
 
-// Rota para enviar uma mensagem para a conexão ativa
-router.get('/nodemcu/:id', (req, res) => {
-  const nodeId = req.params.id; // Obter o ID do NodeMCU a partir dos parâmetros de rota
+// Rotas nodemcu
 
-  // Verifique se há conexões ativas
-  const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
-
-  if (targetConnection) {
-    const binaryMessage = Buffer.from([0x03]); // Exemplo de mensagem binária
-
-    targetConnection.ws.send(binaryMessage);
-
-    res.status(200).json({ success: true, message: 'A rota foi acessada com sucesso' });
-  } else {
-    res.status(400).json({ success: false, message: 'Nenhuma conexão ativa encontrada para o NodeMCU especificado' });
-  }
-});
-
+router.get('/nodemcu/on/:id', nodemcuController.turnOn);
+router.get('/nodemcu/off/:id', nodemcuController.turnOff);
+router.get('/nodemcu/status/:id', nodemcuController.checkStatus);
 
 
 
