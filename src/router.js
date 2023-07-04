@@ -15,7 +15,7 @@ const validateTransaction = require('./middlewares/transactionMiddleware');
 const verifyToken = require('./middlewares/authMiddleware');
 
 
-
+router.get('/',function(req,res){res.send("HelloWord")});
 
 // User routes
 router.get('/users', verifyToken, usersController.getAllUsers);
