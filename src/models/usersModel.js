@@ -29,8 +29,8 @@ const createUser = async (user) => {
     throw new Error(`Usuário com esse ${conflictField} já existe.`);
   }
 
-  const insertUserQuery = 'INSERT INTO users (first_name, last_name, cpf, email, data_nasc, telefone, predio, credito, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [first_name, last_name, cpf, email, data_nasc, telefone, predio, credito, hashedPassword];
+  const insertUserQuery = 'INSERT INTO users (first_name, last_name, cpf, email, data_nasc, telefone, credito, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [first_name, last_name, cpf, email, data_nasc, telefone, credito, hashedPassword];
 
   try {
     const [result] = await connection.execute(insertUserQuery, values);
