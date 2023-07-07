@@ -8,9 +8,8 @@ const HOST = '0.0.0.0';
 const server = app.listen(PORT, HOST, () => {
   console.log('Server running on', HOST + ':' + PORT);
 });
-app.get('/',(request,response)=>{
-  return response.json(200);
-});
+
+
 
 const { createWebSocketServer } = require('./websocket');
 createWebSocketServer(server);
