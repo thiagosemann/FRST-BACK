@@ -1,10 +1,10 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 const connection = mysql.createPool({
-    host: "frst.ctvhkjlufgps.sa-east-1.rds.amazonaws.com",
-    user: "admin",
-    password: "admin123",
-    database: "frst"
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DB
 });
 
 module.exports = connection;
