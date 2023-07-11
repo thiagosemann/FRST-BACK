@@ -17,7 +17,7 @@ const verifyToken = require('./middlewares/authMiddleware');
 
 
 // User routes
-router.get('/users', verifyToken, usersController.getAllUsers);
+router.get('/users', usersController.getAllUsers);
 router.get('/users/:id', verifyToken, usersController.getUser);
 router.delete('/users/:id', verifyToken, usersController.deleteTask);
 router.put('/users/:id', verifyToken, usersController.updateTask);
