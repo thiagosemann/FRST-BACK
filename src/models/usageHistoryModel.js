@@ -1,7 +1,20 @@
 const connection = require('./connection');
 
-const getAllUsageHistoryByUser = async (userId) => {
-  const [rows] = await connection.execute('SELECT * FROM UsageHistory WHERE user_id = ?', [userId]);
+const getAllUsageHistoryByUser = async (userId, month) => {
+  let query = 'SELECT * FROM UsageHistory WHERE user_id = ?';
+
+  if (month) {
+    const monthStart = new Date(month);
+    monthStart.setDate(1);
+    const monthEnd = new Date(month);
+    monthEnd.setMonth(monthEnd.getMonth() + 1);
+    monthEnd.setDate(0);
+    query += ' AND start_time >= ? AND start_time <= ?';
+    const [rows] = await connection.execute(query, [userId, monthStart, monthEnd]);
+    return rows;
+  }
+
+  const [rows] = await connection.execute(query, [userId]);
   return rows;
 };
 
@@ -21,6 +34,7 @@ const createUsageHistory = async (usage) => {
     throw new Error('Failed to create usage history');
   }
 };
+
 const getAllUsageHistoryByMachine = async (machineId) => {
   const [rows] = await connection.execute('SELECT * FROM UsageHistory WHERE machine_id = ?', [machineId]);
   return rows;
@@ -38,11 +52,10 @@ const updateUsageHistory = async (usageHistory) => {
   }
 };
 
-
 module.exports = {
   getAllUsageHistoryByUser,
   getAllUsageHistory,
   createUsageHistory,
   getAllUsageHistoryByMachine,
-  updateUsageHistory
+  updateUsageHistory,
 };

@@ -3,7 +3,9 @@ const UsageHistory = require('../models/usageHistoryModel');
 const getUserUsageHistory = async (req, res) => {
   try {
     const userId = req.params.id;
-    const usageHistory = await UsageHistory.getAllUsageHistoryByUser(userId);
+    const month = req.query.month; // Adicionado o parâmetro do mês
+
+    const usageHistory = await UsageHistory.getAllUsageHistoryByUser(userId, month);
     res.json(usageHistory);
   } catch (error) {
     console.error('Error getting user usage history:', error);
@@ -13,7 +15,9 @@ const getUserUsageHistory = async (req, res) => {
 
 const getAllUsageHistory = async (req, res) => {
   try {
-    const usageHistory = await UsageHistory.getAllUsageHistory();
+    const month = req.query.month; // Adicionado o parâmetro do mês
+
+    const usageHistory = await UsageHistory.getAllUsageHistory(month);
     res.json(usageHistory);
   } catch (error) {
     console.error('Error getting all usage history:', error);
@@ -30,10 +34,13 @@ const createUsageHistory = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 const getMachineUsageHistory = async (req, res) => {
   try {
     const machineId = req.params.id;
-    const usageHistory = await UsageHistory.getAllUsageHistoryByMachine(machineId);
+    const month = req.query.month; // Adicionado o parâmetro do mês
+
+    const usageHistory = await UsageHistory.getAllUsageHistoryByMachine(machineId, month);
     res.json(usageHistory);
   } catch (error) {
     console.error('Error getting machine usage history:', error);
@@ -51,12 +58,10 @@ const updateUsageHistory = async (req, res) => {
   }
 };
 
-
 module.exports = {
   getUserUsageHistory,
   getAllUsageHistory,
   createUsageHistory,
   getMachineUsageHistory,
-  updateUsageHistory
-  
+  updateUsageHistory,
 };

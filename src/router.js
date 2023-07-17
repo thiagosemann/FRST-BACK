@@ -41,8 +41,13 @@ router.post('/buildings', verifyToken, validateBuilding, buildingsController.cre
 
 // UsageHistory routes
 router.get('/usageHistory/user/:id', verifyToken, usageHistoryController.getUserUsageHistory);
+router.get('/usageHistory/user/:id/:month', verifyToken, usageHistoryController.getUserUsageHistory); // Rota com o parâmetro do mês
+
 router.get('/usageHistory/machine/:id', verifyToken, usageHistoryController.getMachineUsageHistory);
+router.get('/usageHistory/machine/:id/:month', verifyToken, usageHistoryController.getMachineUsageHistory); // Rota com o parâmetro do mês
+
 router.get('/usageHistory', verifyToken, usageHistoryController.getAllUsageHistory);
+router.get('/usageHistory/:month', verifyToken, usageHistoryController.getAllUsageHistory); // Rota com o parâmetro do mês
 
 router.post('/usageHistory', verifyToken, usageHistoryController.createUsageHistory);
 router.put('/usageHistory/:id', verifyToken, usageHistoryController.updateUsageHistory);
