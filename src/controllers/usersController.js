@@ -55,35 +55,12 @@ const getUser = async (request, response) => {
   }
 };
 
-const deleteTask = async (request, response) => {
-  try {
-    const { id } = request.params;
-    await usersModel.deleteTask(id);
-    return response.status(204).json();
-  } catch (error) {
-    console.error('Erro ao excluir tarefa:', error);
-    return response.status(500).json({ error: 'Erro ao excluir tarefa' });
-  }
-};
-
-const updateTask = async (request, response) => {
-  try {
-    const { id } = request.params;
-    await usersModel.updateTask(id, request.body);
-    return response.status(204).json();
-  } catch (error) {
-    console.error('Erro ao atualizar tarefa:', error);
-    return response.status(500).json({ error: 'Erro ao atualizar tarefa' });
-  }
-};
-
 
 
 module.exports = {
   getAllUsers,
   createUser,
   loginUser,
-  getUser,
-  deleteTask,
-  updateTask,
+  getUser
+
 };

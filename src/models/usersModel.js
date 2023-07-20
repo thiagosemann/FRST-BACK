@@ -2,8 +2,7 @@ const connection = require('./connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const SECRET_KEY = process.env.SECRET_KEY; // substitua 'your_secret_key' por uma chave secreta forte
-
+const SECRET_KEY = process.env.SECRET_KEY;
 
 const getAllUsers = async () => {
   const [users] = await connection.execute('SELECT * FROM users');
@@ -13,14 +12,14 @@ const getAllUsers = async () => {
 const saltRounds = 10;
 
 const createUser = async (user) => {
-  const { first_name, last_name, cpf, email, data_nasc, telefone, predio, credito, password } = user;
-  
+  const { first_name, last_name, cpf, email, data_nasc, telefone, predio, credito, password, role } = user;
+
   // Gere o hash da senha
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   const checkUserExistsQuery = 'SELECT * FROM users WHERE cpf = ? OR email = ? OR telefone = ?';
   const [existingUsers] = await connection.execute(checkUserExistsQuery, [cpf, email, telefone]);
-  
+
   if (existingUsers.length > 0) {
     let conflictField = '';
     if (existingUsers[0].cpf === cpf) conflictField = 'CPF';
@@ -29,8 +28,8 @@ const createUser = async (user) => {
     throw new Error(`Usuário com esse ${conflictField} já existe.`);
   }
 
-  const insertUserQuery = 'INSERT INTO users (first_name, last_name, cpf, email, data_nasc, telefone, credito, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [first_name, last_name, cpf, email, data_nasc, telefone, credito, hashedPassword];
+  const insertUserQuery = 'INSERT INTO users (first_name, last_name, cpf, email, data_nasc, telefone, predio, credito, password, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [first_name, last_name, cpf, email, data_nasc, telefone, predio, credito, hashedPassword, role];
 
   try {
     const [result] = await connection.execute(insertUserQuery, values);
@@ -52,7 +51,6 @@ const loginUser = async (email, password) => {
 
   if (users.length > 0) {
     const user = users[0];
-    console.log(user);
     // Compare o hash da senha com a senha armazenada
     const match = await bcrypt.compare(password, user.password);
     if (match) {
@@ -76,7 +74,6 @@ const getUser = async (id) => {
     return null;
   }
 };
-
 
 module.exports = {
   getAllUsers,
