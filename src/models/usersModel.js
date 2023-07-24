@@ -75,9 +75,41 @@ const getUser = async (id) => {
   }
 };
 
+const updateUser = async (id, user) => {
+  const { first_name, last_name, cpf, email, data_nasc, telefone, predio, credito, password, role } = user;
+
+  // Check if the user exists
+  const getUserQuery = 'SELECT * FROM users WHERE id = ?';
+  const [existingUsers] = await connection.execute(getUserQuery, [id]);
+
+  if (existingUsers.length === 0) {
+    throw new Error('Usuário não encontrado.');
+  }
+
+  // Update the user data
+  const updateUserQuery = `
+    UPDATE users 
+    SET first_name = ?, last_name = ?, cpf = ?, email = ?, data_nasc = ?, telefone = ?, predio = ?, credito = ?, password = ?, role = ?
+    WHERE id = ?
+  `;
+
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  const values = [first_name, last_name, cpf, email, data_nasc, telefone, predio, credito, hashedPassword, role, id];
+
+  try {
+    await connection.execute(updateUserQuery, values);
+    return { message: 'Usuário atualizado com sucesso.' };
+  } catch (error) {
+    console.error('Erro ao atualizar usuário:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getAllUsers,
   createUser,
   loginUser,
-  getUser
+  getUser,
+  updateUser
 };

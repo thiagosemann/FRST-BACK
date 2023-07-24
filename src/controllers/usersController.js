@@ -56,11 +56,23 @@ const getUser = async (request, response) => {
 };
 
 
+const updateUser = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const updatedUser = await usersModel.updateUser(id, request.body);
+    return response.status(200).json(updatedUser);
+  } catch (error) {
+    console.error('Erro ao atualizar usuário:', error);
+    return response.status(500).json({ error: 'Erro ao atualizar usuário' });
+  }
+};
+
 
 module.exports = {
   getAllUsers,
   createUser,
   loginUser,
-  getUser
+  getUser,
+  updateUser
 
 };
