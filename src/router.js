@@ -20,7 +20,7 @@ const verifyToken = require('./middlewares/authMiddleware');
 router.get('/users', usersController.getAllUsers);
 router.get('/users/:id', verifyToken, usersController.getUser);
 router.post('/login', usersController.loginUser);
-router.post('/users', usersMiddleware.validateUser, usersController.createUser);
+router.post('/users', usersController.createUser);
 router.put('/users/:id', verifyToken, usersController.updateUser); 
 
 // Machine routes
