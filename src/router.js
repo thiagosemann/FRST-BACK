@@ -17,10 +17,10 @@ const verifyToken = require('./middlewares/authMiddleware');
 
 
 // User routes
-router.get('/users', usersController.getAllUsers);
+router.get('/users',verifyToken, usersController.getAllUsers);
 router.get('/users/:id', verifyToken, usersController.getUser);
 router.post('/login', usersController.loginUser);
-router.post('/users', usersController.createUser);
+router.post('/users', verifyToken,usersController.createUser);
 router.put('/users/:id', verifyToken, usersController.updateUser); 
 
 // Machine routes
