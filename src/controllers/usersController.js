@@ -82,7 +82,20 @@ const getUsersByBuilding = async (request, response) => {
     return response.status(500).json({ error: 'Erro ao obter usuários' });
   }
 };
-
+const deleteUser = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const deletedUser = await usersModel.deleteUser(id);
+    if (deletedUser) {
+      return response.status(200).json({ message: 'Usuário excluído com sucesso.' });
+    } else {
+      return response.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+  } catch (error) {
+    console.error('Erro ao excluir usuário:', error);
+    return response.status(500).json({ error: 'Erro ao excluir usuário.' });
+  }
+};
 
 module.exports = {
   getAllUsers,
@@ -90,6 +103,7 @@ module.exports = {
   loginUser,
   getUser,
   updateUser,
-  getUsersByBuilding
+  getUsersByBuilding,
+  deleteUser
 
 };

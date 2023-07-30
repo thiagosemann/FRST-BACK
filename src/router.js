@@ -23,6 +23,7 @@ router.post('/login', usersController.loginUser);
 router.post('/users', verifyToken,usersController.createUser);
 router.put('/users/:id', verifyToken, usersController.updateUser); 
 router.get('/users/building/:building_id', verifyToken, usersController.getUsersByBuilding);
+router.delete('/users/:id', verifyToken, usersController.deleteUser);
 
 
 // Machine routes

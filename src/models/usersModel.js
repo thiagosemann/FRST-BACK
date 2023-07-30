@@ -112,11 +112,32 @@ const getUsersByBuilding = async (building_id) => {
   return users;
 };
 
+const deleteUser = async (id) => {
+  // Check if the user exists
+  const getUserQuery = 'SELECT * FROM users WHERE id = ?';
+  const [existingUsers] = await connection.execute(getUserQuery, [id]);
+
+  if (existingUsers.length === 0) {
+    return null; // Return null if the user doesn't exist
+  }
+
+  // Delete the user
+  const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
+  try {
+    await connection.execute(deleteUserQuery, [id]);
+    return true; // Return true if the user was deleted successfully
+  } catch (error) {
+    console.error('Erro ao excluir usuário:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getAllUsers,
   createUser,
   loginUser,
   getUser,
   updateUser,
-  getUsersByBuilding
+  getUsersByBuilding,
+  deleteUser
 };
