@@ -67,12 +67,29 @@ const updateUser = async (request, response) => {
   }
 };
 
+const getUsersByBuilding = async (request, response) => {
+  try {
+    const { building_id } = request.params;
+    const users = await usersModel.getUsersByBuilding(building_id);
+
+    if (users.length > 0) {
+      return response.status(200).json(users);
+    } else {
+      return response.status(404).json({ message: 'Nenhum usuário encontrado para o building_id informado' });
+    }
+  } catch (error) {
+    console.error('Erro ao obter usuários pelo building_id:', error);
+    return response.status(500).json({ error: 'Erro ao obter usuários' });
+  }
+};
+
 
 module.exports = {
   getAllUsers,
   createUser,
   loginUser,
   getUser,
-  updateUser
+  updateUser,
+  getUsersByBuilding
 
 };

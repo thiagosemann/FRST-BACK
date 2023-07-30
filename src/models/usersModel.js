@@ -106,10 +106,17 @@ const updateUser = async (id, user) => {
   }
 };
 
+const getUsersByBuilding = async (building_id) => {
+  const query = 'SELECT * FROM users WHERE building_id = ?';
+  const [users] = await connection.execute(query, [building_id]);
+  return users;
+};
+
 module.exports = {
   getAllUsers,
   createUser,
   loginUser,
   getUser,
-  updateUser
+  updateUser,
+  getUsersByBuilding
 };
