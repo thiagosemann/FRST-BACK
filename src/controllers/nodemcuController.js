@@ -34,9 +34,8 @@ const checkStatus = (req, res) => {
   const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
 
   if (targetConnection) {
-    const binaryMessage = Buffer.from([0x03]);
-    targetConnection.ws.send(binaryMessage);
-    res.status(200).json({ success: true, message: 'A consulta de status foi enviada com sucesso' });
+    // A conexão existe, o que indica que está ativa
+    res.status(200).json({ success: true, message: 'A conexão com o NodeMCU está ativa' });
   } else {
     res.status(400).json({ success: false, message: 'Nenhuma conexão ativa encontrada para o NodeMCU especificado' });
   }
