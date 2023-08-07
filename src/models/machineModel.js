@@ -21,6 +21,12 @@ const getMachinesByBuilding = async (building_id) => {
   const [machines] = await connection.execute('SELECT * FROM Machines WHERE building_id = ?', [building_id]);
   return machines;
 };
+
+const getMachinesByIdNodeMcu = async (idNodemcu) => {
+  const [machines] = await connection.execute('SELECT * FROM Machines WHERE idNodemcu = ?', [idNodemcu]);
+  return machines;
+};
+
 const updateMachineStatus = async (machineId, newStatus) => {
   const query = 'UPDATE Machines SET is_in_use = ? WHERE id = ?';
   const [result] = await connection.execute(query, [newStatus, machineId]);
@@ -32,5 +38,6 @@ module.exports = {
   getMachineById,
   createMachine,
   getMachinesByBuilding,
-  updateMachineStatus
+  updateMachineStatus,
+  getMachinesByIdNodeMcu
 };

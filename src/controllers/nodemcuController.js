@@ -1,4 +1,6 @@
 const { wss, connections } = require('../websocket');
+const Machine = require('../models/machineModel');
+
 // nodemcuController.js
 
 const turnOn = (req, res) => {
@@ -40,4 +42,28 @@ const checkStatus = (req, res) => {
   }
 };
 
-module.exports = { turnOn, turnOff, checkStatus };
+const receiveMachineStatus = async (nodeId, machineStatus) => {
+  // Obter o ID da máquina associada ao NodeMCU usando o nodeId
+  const machines = await getMachinesByIdNodeMcu(nodeId);
+  if (machines && machines.length > 0) {
+    const machineId = machines[0].id;
+    // Atualizar o status da máquina no banco de dados
+    const status = machineStatus === 'ON' ? true : false;
+    Machine.updateMachineStatus(machineId, status)
+      .then((result) => {
+        if (result) {
+          console.log(`Machine status updated for NodeMCU ${nodeId}`);
+        } else {
+          console.log(`Error updating machine status for NodeMCU ${nodeId}`);
+        }
+      })
+      .catch((error) => {
+        console.log('Error updating machine status:', error);
+      });
+  } else {
+    console.log(`No machine found for the specified NodeMCU ${nodeId}`);
+  }
+};
+
+
+module.exports = { turnOn, turnOff, checkStatus, receiveMachineStatus };

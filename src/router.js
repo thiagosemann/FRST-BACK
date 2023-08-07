@@ -58,7 +58,6 @@ router.get('/transactions', verifyToken, transactionsController.getAllTransactio
 router.post('/transactions', verifyToken, validateTransaction, transactionsController.createTransaction);
 
 // Rotas nodemcu
-
 router.get('/nodemcu/on/:id', nodemcuController.turnOn);
 router.get('/nodemcu/off/:id', nodemcuController.turnOff);
 router.get('/nodemcu/status/:id', nodemcuController.checkStatus);
