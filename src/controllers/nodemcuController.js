@@ -32,12 +32,15 @@ const turnOff = (req, res) => {
 const checkStatus = (req, res) => {
   const nodeId = req.params.id;
   const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
-
-  if (targetConnection) {
-    // A conexão existe, o que indica que está ativa
-    res.status(200).json({ success: true, message: 'A conexão com o NodeMCU está ativa' });
-  } else {
-    res.status(400).json({ success: false, message: 'Nenhuma conexão ativa encontrada para o NodeMCU especificado' });
+  try {
+    if (targetConnection) {
+      // A conexão existe, o que indica que está ativa
+      res.status(200).json({ success: true, message: 'A conexão com o NodeMCU está ativa' });
+    } else {
+      res.status(200).json({ success: false, message: 'Nenhuma conexão ativa encontrada para o NodeMCU especificado' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
