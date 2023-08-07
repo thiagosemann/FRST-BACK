@@ -1,5 +1,5 @@
 const WebSocket = require('ws');
-const { receiveMachineStatus } = require('./nodeMcuController'); // Importe a função receiveMachineStatus
+const { receiveMachineStatus } = require('./controllers/nodemcuController'); // Importe a função receiveMachineStatus
 
 let wss;
 const connections = [];
