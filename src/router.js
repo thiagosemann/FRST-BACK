@@ -52,7 +52,7 @@ router.get('/usageHistory/:month', verifyToken, usageHistoryController.getAllUsa
 router.post('/usageHistory', verifyToken, usageHistoryController.createUsageHistory);
 router.put('/usageHistory/:id', verifyToken, usageHistoryController.updateUsageHistory);
 
-router.delete('/usage-history/:id', verifyToken, usageHistoryController.deleteUsageHistoryById);
+router.delete('/usageHistory/:id', verifyToken, usageHistoryController.deleteUsageHistoryById);
 
 // Transaction routes
 router.get('/transactions', verifyToken, transactionsController.getAllTransactions);
