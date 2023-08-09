@@ -1,6 +1,6 @@
 const Transaction = require('../models/transactionModel');
 
-getAllTransactions = async (req, res) => {
+const getAllTransactions = async (req, res) => {
   try {
     const transactions = await Transaction.getAllTransactions();
     res.json(transactions);
@@ -9,7 +9,7 @@ getAllTransactions = async (req, res) => {
   }
 };
 
-createTransaction = async (req, res) => {
+const createTransaction = async (req, res) => {
   try {
     const newTransaction = await Transaction.createTransaction(req.body);
     res.status(201).json(newTransaction);
@@ -18,7 +18,7 @@ createTransaction = async (req, res) => {
   }
 };
 
-getTransactionByUsageHistoryId = async (req, res) => {
+const getTransactionByUsageHistoryId = async (req, res) => {
   try {
     const transaction = await Transaction.getTransactionByUsageHistoryId(req.params.id);
     if (transaction) {
@@ -31,4 +31,24 @@ getTransactionByUsageHistoryId = async (req, res) => {
   }
 };
 
-module.exports = { getAllTransactions, createTransaction, getTransactionByUsageHistoryId };
+const deleteTransactionById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const isDeleted = await Transaction.deleteTransactionById(id);
+
+    if (isDeleted) {
+      res.json({ message: 'Transaction deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'Transaction not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  getAllTransactions,
+  createTransaction,
+  getTransactionByUsageHistoryId,
+  deleteTransactionById
+};

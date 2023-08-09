@@ -58,10 +58,26 @@ const updateUsageHistory = async (req, res) => {
   }
 };
 
+const deleteUsageHistoryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const isDeleted = await UsageHistory.deleteUsageHistoryById(id);
+
+    if (isDeleted) {
+      res.json({ message: 'Usage history deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'Usage history not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getUserUsageHistory,
   getAllUsageHistory,
   createUsageHistory,
   getMachineUsageHistory,
   updateUsageHistory,
+  deleteUsageHistoryById
 };

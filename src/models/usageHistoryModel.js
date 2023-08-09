@@ -52,10 +52,20 @@ const updateUsageHistory = async (usageHistory) => {
   }
 };
 
+const deleteUsageHistoryById = async (usageHistoryId) => {
+  try {
+    const [result] = await connection.execute('DELETE FROM UsageHistory WHERE id = ?', [usageHistoryId]);
+    return result.affectedRows > 0; // Retorna verdadeiro se uma linha foi afetada (excluída)
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   getAllUsageHistoryByUser,
   getAllUsageHistory,
   createUsageHistory,
   getAllUsageHistoryByMachine,
   updateUsageHistory,
+  deleteUsageHistoryById
 };

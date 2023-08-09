@@ -52,10 +52,13 @@ router.get('/usageHistory/:month', verifyToken, usageHistoryController.getAllUsa
 router.post('/usageHistory', verifyToken, usageHistoryController.createUsageHistory);
 router.put('/usageHistory/:id', verifyToken, usageHistoryController.updateUsageHistory);
 
+router.delete('/usage-history/:id', verifyToken, usageHistoryController.deleteUsageHistoryById);
+
 // Transaction routes
 router.get('/transactions', verifyToken, transactionsController.getAllTransactions);
 router.post('/transactions', verifyToken, validateTransaction, transactionsController.createTransaction);
 router.get('/transactions/:id', verifyToken, transactionsController.getTransactionByUsageHistoryId);
+router.delete('/transactions/:id', verifyToken, transactionsController.deleteTransactionById);
 
 // Rotas nodemcu
 router.get('/nodemcu/on/:id', nodemcuController.turnOn);

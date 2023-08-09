@@ -17,8 +17,18 @@ const getTransactionByUsageHistoryId = async (usage_history_id) => {
   return transactions[0];
 };
 
+const deleteTransactionById = async (transactionId) => {
+  try {
+    const [result] = await connection.execute('DELETE FROM Transactions WHERE id = ?', [transactionId]);
+    return result.affectedRows > 0; // Retorna verdadeiro se uma linha foi afetada (excluída)
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   getAllTransactions,
   createTransaction,
-  getTransactionByUsageHistoryId
+  getTransactionByUsageHistoryId,
+  deleteTransactionById
 };
