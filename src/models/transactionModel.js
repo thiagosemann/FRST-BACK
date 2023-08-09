@@ -12,7 +12,13 @@ const createTransaction = async (transaction) => {
   return { insertId: result.insertId };
 };
 
+const getTransactionByUsageHistoryId = async (usage_history_id) => {
+  const [transactions] = await connection.execute('SELECT * FROM Transactions WHERE usage_history_id = ?', [usage_history_id]);
+  return transactions[0];
+};
+
 module.exports = {
   getAllTransactions,
-  createTransaction
+  createTransaction,
+  getTransactionByUsageHistoryId
 };

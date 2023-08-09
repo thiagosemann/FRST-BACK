@@ -8,7 +8,6 @@ const usageHistoryController = require('./controllers/usageHistoryController');
 const transactionsController = require('./controllers/transactionController');
 const nodemcuController = require('./controllers/nodemcuController');
 
-const usersMiddleware = require('./middlewares/usersMiddleware');
 const validateMachine = require('./middlewares/machinesMiddleware');
 const validateBuilding = require('./middlewares/buildingsMiddleware');
 const validateTransaction = require('./middlewares/transactionMiddleware');
@@ -56,6 +55,7 @@ router.put('/usageHistory/:id', verifyToken, usageHistoryController.updateUsageH
 // Transaction routes
 router.get('/transactions', verifyToken, transactionsController.getAllTransactions);
 router.post('/transactions', verifyToken, validateTransaction, transactionsController.createTransaction);
+router.put('/transactions/:id', verifyToken, transactionsController.getTransactionByUsageHistoryId);
 
 // Rotas nodemcu
 router.get('/nodemcu/on/:id', nodemcuController.turnOn);

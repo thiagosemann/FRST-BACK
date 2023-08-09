@@ -1,6 +1,6 @@
 const Transaction = require('../models/transactionModel');
 
-exports.getAllTransactions = async (req, res) => {
+getAllTransactions = async (req, res) => {
   try {
     const transactions = await Transaction.getAllTransactions();
     res.json(transactions);
@@ -9,7 +9,7 @@ exports.getAllTransactions = async (req, res) => {
   }
 };
 
-exports.createTransaction = async (req, res) => {
+createTransaction = async (req, res) => {
   try {
     const newTransaction = await Transaction.createTransaction(req.body);
     res.status(201).json(newTransaction);
@@ -17,3 +17,18 @@ exports.createTransaction = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+getTransactionByUsageHistoryId = async (req, res) => {
+  try {
+    const transaction = await Transaction.getTransactionByUsageHistoryId(req.params.id);
+    if (transaction) {
+      res.json(transaction);
+    } else {
+      res.status(404).json({ message: 'Transaction not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { getAllTransactions, createTransaction, getTransactionByUsageHistoryId };
