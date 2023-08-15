@@ -44,14 +44,14 @@ const checkStatus = (req, res) => {
   }
 };
 
-const receiveMachineStatus = async (nodeId, machineStatus) => {
+const chagenMachineStatusToFalse = async (nodeId) => {
   // Obter o ID da máquina associada ao NodeMCU usando o nodeId
   const machines = await getMachinesByIdNodeMcu(nodeId);
   if (machines && machines.length > 0) {
     const machineId = machines[0].id;
     // Atualizar o status da máquina no banco de dados
-    const status = machineStatus === 'ON' ? true : false;
-    Machine.updateMachineStatus(machineId, status)
+    const is_in_use = false;
+    Machine.updateMachineStatus(machineId, is_in_use)
       .then((result) => {
         if (result) {
           console.log(`Machine status updated for NodeMCU ${nodeId}`);
@@ -68,4 +68,4 @@ const receiveMachineStatus = async (nodeId, machineStatus) => {
 };
 
 
-module.exports = { turnOn, turnOff, checkStatus, receiveMachineStatus };
+module.exports = { turnOn, turnOff, checkStatus, chagenMachineStatusToFalse };
