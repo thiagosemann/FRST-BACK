@@ -2,6 +2,7 @@ const connection = require('../src/models/connection');
 const machinesModel = require('./models/machineModel');
 const buildingsModel = require('./models/buildingsModel');
 const usageHistoryModel = require('./models/usageHistoryModel');
+const controleConexao = require('./controllers/controleConexaoController');
 
 const WebSocket = require('ws');
 
@@ -72,7 +73,7 @@ async function logConnectionStatus(nodeId, connected) {
       id_maquina: machineId // Substitua por um valor válido
     };
   
-    disconnectionsController.createDisconnection(disconnectionData)
+    controleConexao.createDisconnection(disconnectionData)
       .then(newDisconnection => {
         console.log(`NodeMCU ${nodeId} ${status}`);
         console.log('Log criado:', newDisconnection);
