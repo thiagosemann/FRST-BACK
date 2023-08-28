@@ -63,6 +63,10 @@ function createWebSocketServer(server) {
 async function logConnectionStatus(nodeId, connected) {
   const status = connected ? 'conectado' : 'desconectado';
   const machines = await machinesModel.getMachinesByIdNodeMcu(nodeId);
+  console.log("Machines",machines)
+  console.log("nodeId",nodeId)
+  console.log("connected",connected)
+  
   if (machines.length > 0) {
     const machineId = machines[0].id;
     // Crie uma nova desconexão com as informações relevantes
