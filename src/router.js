@@ -35,7 +35,7 @@ router.post('/machines', verifyToken, validateMachine, machinesController.create
 router.put('/machines/:id', verifyToken, machinesController.updateMachineStatus);
 
 // Building routes
-router.get('/buildings', verifyToken, buildingsController.getAllBuildings);
+router.get('/buildings', buildingsController.getAllBuildings);
 router.get('/buildings/:id', verifyToken, buildingsController.getBuildingById);
 
 router.post('/buildings', verifyToken, validateBuilding, buildingsController.createBuilding);
