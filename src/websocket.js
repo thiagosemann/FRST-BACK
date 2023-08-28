@@ -2,7 +2,6 @@ const connection = require('../src/models/connection');
 const machinesModel = require('./models/machineModel');
 const buildingsModel = require('./models/buildingsModel');
 const usageHistoryModel = require('./models/usageHistoryModel');
-const controleConexao = require('./controllers/controleConexaoController');
 
 const WebSocket = require('ws');
 
@@ -62,11 +61,7 @@ function createWebSocketServer(server) {
 
 async function logConnectionStatus(nodeId, connected) {
   const status = connected ? 'conectado' : 'desconectado';
-  const machines = await machinesModel.getMachinesByIdNodeMcu(nodeId);
-  console.log("Machines",machines)
-  console.log("nodeId",nodeId)
-  console.log("connected",connected)
-  
+  const machines = await machinesModel.getMachinesByIdNodeMcu(nodeId); 
   if (machines.length > 0) {
     const machineId = machines[0].id;
     // Crie uma nova desconexão com as informações relevantes
@@ -76,15 +71,13 @@ async function logConnectionStatus(nodeId, connected) {
       status: status, // Status da conexão
       id_maquina: machineId // Substitua por um valor válido
     };
+
+    const { data_hora, nodemcuID, status, id_maquina } = disconnectionData;
+    const query = 'INSERT INTO desconexoes_nodemcu (data_hora, nodemcuID, status, id_maquina) VALUES (?, ?, ?, ?)';
+    const [result] = await connection.execute(query, [data_hora, nodemcuID, status, id_maquina]);
+    return { insertId: result.insertId };
   
-    controleConexao.createDisconnection(disconnectionData)
-      .then(newDisconnection => {
-        console.log(`NodeMCU ${nodeId} ${status}`);
-        console.log('Log criado:', newDisconnection);
-      })
-      .catch(error => {
-        console.log('Error creating disconnection:', error);
-      });
+
   }
 
 }
