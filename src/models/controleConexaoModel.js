@@ -11,6 +11,8 @@ const getDisconnectionById = async (disconnectionId) => {
 };
 
 const createDisconnection = async (disconnection) => {
+console.log('Disconnection object:', disconnection); // Adicione esta linha
+
   const { data_hora, nodemcuID, status, id_maquina } = disconnection;
   const query = 'INSERT INTO desconexoes_nodemcu (data_hora, nodemcuID, status, id_maquina) VALUES (?, ?, ?, ?)';
   const [result] = await connection.execute(query, [data_hora, nodemcuID, status, id_maquina]);
