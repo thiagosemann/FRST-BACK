@@ -66,7 +66,7 @@ async function logConnectionStatus(nodeId, connected) {
   const nodemcuID   =  nodeId;
   const id_maquina  = machines[0].id; 
 
-  const query = 'INSERT INTO desconexoes_nodemcu (data_hora, nodemcuID, status, id_maquina) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO Controle_Conexao (data_hora, nodemcuID, status, id_maquina) VALUES (?, ?, ?, ?)';
   const [result] = await connection.execute(query, [data_hora, nodemcuID, status, id_maquina]);
   return { insertId: result.insertId };
 
