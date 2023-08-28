@@ -61,24 +61,14 @@ function createWebSocketServer(server) {
 
 async function logConnectionStatus(nodeId, connected) {
   const status = connected ? 'conectado' : 'desconectado';
-  const machines = await machinesModel.getMachinesByIdNodeMcu(nodeId); 
-  if (machines.length > 0) {
-    const machineId = machines[0].id;
-    // Crie uma nova desconexão com as informações relevantes
-    const disconnectionData = {
-      data_hora: new Date(), // Pode ajustar para a data/hora correta
-      nodemcuID: nodeId,
-      status: status, // Status da conexão
-      id_maquina: machineId // Substitua por um valor válido
-    };
+  const machines = await machinesModel.getMachinesByIdNodeMcu(nodeId);
+  const data_hora   = new Date(); 
+  const nodemcuID   =  nodeId;
+  const id_maquina  = machines[0].id; 
 
-    const { data_hora, nodemcuID, status, id_maquina } = disconnectionData;
-    const query = 'INSERT INTO desconexoes_nodemcu (data_hora, nodemcuID, status, id_maquina) VALUES (?, ?, ?, ?)';
-    const [result] = await connection.execute(query, [data_hora, nodemcuID, status, id_maquina]);
-    return { insertId: result.insertId };
-  
-
-  }
+  const query = 'INSERT INTO desconexoes_nodemcu (data_hora, nodemcuID, status, id_maquina) VALUES (?, ?, ?, ?)';
+  const [result] = await connection.execute(query, [data_hora, nodemcuID, status, id_maquina]);
+  return { insertId: result.insertId };
 
 }
 
