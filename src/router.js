@@ -7,6 +7,7 @@ const buildingsController = require('./controllers/buildingsController');
 const usageHistoryController = require('./controllers/usageHistoryController');
 const transactionsController = require('./controllers/transactionController');
 const nodemcuController = require('./controllers/nodemcuController');
+const controleConexao = require('./controllers/controleConexaoController');
 
 const validateMachine = require('./middlewares/machinesMiddleware');
 const validateBuilding = require('./middlewares/buildingsMiddleware');
@@ -64,6 +65,13 @@ router.delete('/transactions/:id', verifyToken, transactionsController.deleteTra
 router.get('/nodemcu/on/:id', nodemcuController.turnOn);
 router.get('/nodemcu/off/:id', nodemcuController.turnOff);
 router.get('/nodemcu/status/:id', nodemcuController.checkStatus);
+
+
+// Controle Conexão
+router.get('/disconnections', verifyToken, controleConexao.getAllDisconnections);
+router.get('/disconnections/:id', verifyToken, controleConexao.getDisconnectionById);
+router.post('/disconnections', verifyToken, controleConexao.createDisconnection);
+router.get('/disconnections/machine/:id', verifyToken, controleConexao.getDisconnectionsByMachineId);
 
 
 
