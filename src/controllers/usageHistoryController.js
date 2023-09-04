@@ -73,11 +73,25 @@ const deleteUsageHistoryById = async (req, res) => {
   }
 };
 
+const getUsageHistoryByBuildingAndMonth = async (req, res) => {
+  try {
+    const buildingId = req.params.buildingId;
+    const month = req.params.month; // Parâmetro do mês da consulta
+    const usageHistory = await UsageHistory.getUsageHistoryByBuildingAndMonth(buildingId, month);
+    res.json(usageHistory);
+  } catch (error) {
+    console.error('Error getting usage history by building and month:', error);
+    res.status(500).json({ error: 'Failed to get usage history by building and month' });
+  }
+};
+
 module.exports = {
   getUserUsageHistory,
   getAllUsageHistory,
   createUsageHistory,
   getMachineUsageHistory,
   updateUsageHistory,
-  deleteUsageHistoryById
+  deleteUsageHistoryById,
+  getUsageHistoryByBuildingAndMonth,
+
 };

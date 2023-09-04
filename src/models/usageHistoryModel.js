@@ -2,7 +2,6 @@ const connection = require('./connection');
 
 const getAllUsageHistoryByUser = async (userId, month) => {
   let query = 'SELECT * FROM UsageHistory WHERE user_id = ?';
-
   if (month) {
     const monthStart = new Date(month);
     monthStart.setDate(1);
@@ -22,6 +21,39 @@ const getAllUsageHistory = async () => {
   const [rows] = await connection.execute('SELECT * FROM UsageHistory');
   return rows;
 };
+
+const getUsageHistoryByBuildingAndMonth = async (buildingId, yearMonth) => {
+  const [year, month] = yearMonth.split('-').map(Number);
+
+  let query = `
+    SELECT UH.*, U.apt_name
+    FROM UsageHistory UH
+    INNER JOIN users U ON UH.user_id = U.id
+    WHERE U.building_id = ?
+  `;
+  
+  if (!isNaN(year) && !isNaN(month)) {
+    query += ' AND YEAR(UH.start_time) = ? AND MONTH(UH.start_time) = ?';
+  }
+
+  const queryParams = [buildingId];
+
+  if (!isNaN(year) && !isNaN(month)) {
+    queryParams.push(year, month);
+  }
+
+  try {
+    const [rows] = await connection.execute(query, queryParams);
+    return rows;
+  } catch (err) {
+    console.error('Error retrieving usage history by building and month:', err);
+    throw new Error('Failed to retrieve usage history by building and month');
+  }
+};
+
+
+
+
 
 const createUsageHistory = async (usage) => {
   try {
@@ -67,5 +99,6 @@ module.exports = {
   createUsageHistory,
   getAllUsageHistoryByMachine,
   updateUsageHistory,
-  deleteUsageHistoryById
+  deleteUsageHistoryById,
+  getUsageHistoryByBuildingAndMonth
 };
