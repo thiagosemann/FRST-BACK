@@ -3,13 +3,24 @@ const UsageHistory = require('../models/usageHistoryModel');
 const getUserUsageHistory = async (req, res) => {
   try {
     const userId = req.params.id;
-    const month = req.query.month; // Adicionado o parâmetro do mês
-
+    const month = req.params.month; // Adicionado o parâmetro do mês
     const usageHistory = await UsageHistory.getAllUsageHistoryByUser(userId, month);
     res.json(usageHistory);
   } catch (error) {
     console.error('Error getting user usage history:', error);
     res.status(500).json({ error: 'Failed to get user usage history' });
+  }
+};
+
+const getUsageHistoryByBuildingAndMonth = async (req, res) => {
+  try {
+    const buildingId = req.params.buildingId;
+    const month = req.params.month; // Parâmetro do mês da consulta
+    const usageHistory = await UsageHistory.getUsageHistoryByBuildingAndMonth(buildingId, month);
+    res.json(usageHistory);
+  } catch (error) {
+    console.error('Error getting usage history by building and month:', error);
+    res.status(500).json({ error: 'Failed to get usage history by building and month' });
   }
 };
 
@@ -73,17 +84,7 @@ const deleteUsageHistoryById = async (req, res) => {
   }
 };
 
-const getUsageHistoryByBuildingAndMonth = async (req, res) => {
-  try {
-    const buildingId = req.params.buildingId;
-    const month = req.params.month; // Parâmetro do mês da consulta
-    const usageHistory = await UsageHistory.getUsageHistoryByBuildingAndMonth(buildingId, month);
-    res.json(usageHistory);
-  } catch (error) {
-    console.error('Error getting usage history by building and month:', error);
-    res.status(500).json({ error: 'Failed to get usage history by building and month' });
-  }
-};
+
 
 module.exports = {
   getUserUsageHistory,

@@ -1,21 +1,34 @@
 const connection = require('./connection');
 
-const getAllUsageHistoryByUser = async (userId, month) => {
-  let query = 'SELECT * FROM UsageHistory WHERE user_id = ?';
-  if (month) {
-    const monthStart = new Date(month);
-    monthStart.setDate(1);
-    const monthEnd = new Date(month);
-    monthEnd.setMonth(monthEnd.getMonth() + 1);
-    monthEnd.setDate(0);
-    query += ' AND start_time >= ? AND start_time <= ?';
-    const [rows] = await connection.execute(query, [userId, monthStart, monthEnd]);
-    return rows;
+const getAllUsageHistoryByUser = async (userId, yearMonth) => {
+  const [year, month] = yearMonth.split('-').map(Number);
+
+  let query = `
+    SELECT UH.*, U.apt_name
+    FROM UsageHistory UH
+    INNER JOIN users U ON UH.user_id = U.id
+    WHERE UH.user_id = ?
+  `;
+  
+  if (!isNaN(year) && !isNaN(month)) {
+    query += ' AND YEAR(UH.start_time) = ? AND MONTH(UH.start_time) = ?';
   }
 
-  const [rows] = await connection.execute(query, [userId]);
-  return rows;
+  const queryParams = [userId];
+
+  if (!isNaN(year) && !isNaN(month)) {
+    queryParams.push(year, month);
+  }
+
+  try {
+    const [rows] = await connection.execute(query, queryParams);
+    return rows;
+  } catch (err) {
+    console.error('Error retrieving usage history by user and month:', err);
+    throw new Error('Failed to retrieve usage history by user and month');
+  }
 };
+
 
 const getAllUsageHistory = async () => {
   const [rows] = await connection.execute('SELECT * FROM UsageHistory');
