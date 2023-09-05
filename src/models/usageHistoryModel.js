@@ -39,9 +39,10 @@ const getUsageHistoryByBuildingAndMonth = async (buildingId, yearMonth) => {
   const [year, month] = yearMonth.split('-').map(Number);
 
   let query = `
-    SELECT UH.*, U.apt_name
+    SELECT UH.*, U.apt_name, M.name AS machine_name
     FROM UsageHistory UH
     INNER JOIN users U ON UH.user_id = U.id
+    INNER JOIN Machines M ON UH.machine_id = M.id
     WHERE U.building_id = ?
   `;
   
@@ -63,6 +64,7 @@ const getUsageHistoryByBuildingAndMonth = async (buildingId, yearMonth) => {
     throw new Error('Failed to retrieve usage history by building and month');
   }
 };
+
 
 
 
