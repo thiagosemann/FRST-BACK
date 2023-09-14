@@ -88,17 +88,15 @@ async function updateMachineStatus(nodeId) {
 
       if (result.affectedRows > 0) {
         console.log(`Machine status updated for NodeMCU ${nodeId}`);
-
         // Call the function to get all usage history records for the machine
         const usageHistories = await usageHistoryModel.getAllUsageHistoryByMachine(machineId);
-
         // Find the latest usage history
         const latestUsageHistory = usageHistories[usageHistories.length - 1];
 
         if (latestUsageHistory && !latestUsageHistory.end_time) {
           // Find the building's hourly rate using building_id
-          const building = await buildingsModel.getBuildingById(latestUsageHistory.building_id);
-
+          const building = await buildingsModel.getBuildingById(machines[0].building_id);
+        
           if (building) {
             const currentTimestamp = new Date();
             const endTimestamp = currentTimestamp.toISOString(); // Assuming your database uses ISO date format
