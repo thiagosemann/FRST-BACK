@@ -2,6 +2,7 @@ const connection = require('../src/models/connection');
 const machinesModel = require('./models/machineModel');
 const buildingsModel = require('./models/buildingsModel');
 const usageHistoryModel = require('./models/usageHistoryModel');
+const transactionHistoryModel = require('./models/transactionModel');
 
 const WebSocket = require('ws');
 
@@ -113,8 +114,16 @@ async function updateMachineStatus(nodeId) {
               end_time: endTimestamp,
               total_cost: totalCost
             };
-
             await usageHistoryModel.updateUsageHistory(updatedUsageHistory);
+            // CREATE TRANSACTION
+            const transaction = {
+              user_id: latestUsageHistory.user_id,
+              usage_history_id: updatedUsageHistory.id,
+              transaction_time: new Date(), // or provide a specific transaction time
+              amount: totalCost
+            };
+            console.log(transaction)
+            const transactionResult = await transactionHistoryModel.createTransaction(transaction);
 
             console.log(`Updated usage history for Machine ${machineId}: end_time = ${endTimestamp}, total_cost = ${totalCost}`);
           }
