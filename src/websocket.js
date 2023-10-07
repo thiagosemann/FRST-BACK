@@ -40,20 +40,10 @@ function createWebSocketServer(server) {
     // Handle 'ping' and 'pong' events
     ws.on('ping', () => {
       console.log(`Ping received from client (ID: ${getConnectionNodeId(ws)})`);
-      // Defina um tempo limite para receber o "pong"
-      const pingTimeout = setTimeout(() => {
-        if (ws.readyState === WebSocket.OPEN) {
-          console.log(`Pong não foi recebido em tempo hábil (ID: ${getConnectionNodeId(ws)})`);
-          ws.terminate(); // Encerra a conexão se o "pong" não for recebido
-        }
-      }, 10000); // Defina o tempo limite em milissegundos (5 segundos neste exemplo)
+    });
 
-      // Lide com o evento 'pong' para cancelar o tempo limite
-      ws.on('pong', () => {
-        clearTimeout(pingTimeout);
-        console.log(`Pong received from client (ID: ${getConnectionNodeId(ws)})`);
-
-      });
+    ws.on('pong', () => {
+      console.log(`Pong received from client (ID: ${getConnectionNodeId(ws)})`);
     });
 
     ws.on('close', () => {
@@ -75,7 +65,7 @@ function createWebSocketServer(server) {
         client.ping();
       }
     });
-  }, 10000); // Intervalo para enviar "ping" em milissegundos (10 segundos neste exemplo)
+  }, 10000);
 }
 
 async function logConnectionStatus(nodeId, connected) {
