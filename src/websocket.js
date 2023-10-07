@@ -30,12 +30,20 @@ function createWebSocketServer(server) {
         // Armazene o ID do NodeMCU juntamente com a conexão, se necessário
         connections.push({ ws, nodeId: nodeId, connected: true });
         logConnectionStatus(nodeId, true); // Registrar conexão bem-sucedida
-      } 
+      } else {
         const parts = messageString.split(':');
-        
-      
-      // Enviar resposta para o cliente WebSocket como texto
-      ws.send(messageString);
+        // Enviar resposta para o cliente WebSocket como texto
+        ws.send(messageString);
+      }
+    });
+
+    // Handle 'ping' and 'pong' events
+    ws.on('ping', () => {
+      console.log('Ping received from client');
+    });
+
+    ws.on('pong', () => {
+      console.log('Pong received from client');
     });
 
     ws.on('close', () => {
@@ -63,18 +71,14 @@ function createWebSocketServer(server) {
 async function logConnectionStatus(nodeId, connected) {
   const status = connected ? 'conectado' : 'desconectado';
   const machines = await machinesModel.getMachinesByIdNodeMcu(nodeId);
-  const data_hora   = new Date(); 
-  const nodemcuID   =  nodeId;
-  const id_maquina  = machines[0].id; 
+  const data_hora = new Date();
+  const nodemcuID = nodeId;
+  const id_maquina = machines[0].id;
 
   const query = 'INSERT INTO Controle_Conexao (data_hora, nodemcuID, status, id_maquina) VALUES (?, ?, ?, ?)';
   const [result] = await connection.execute(query, [data_hora, nodemcuID, status, id_maquina]);
   return { insertId: result.insertId };
-
 }
-
-
-
 
 async function updateMachineStatus(nodeId) {
   try {
@@ -97,7 +101,7 @@ async function updateMachineStatus(nodeId) {
         if (latestUsageHistory && !latestUsageHistory.end_time) {
           // Find the building's hourly rate using building_id
           const building = await buildingsModel.getBuildingById(machines[0].building_id);
-        
+
           if (building) {
             const currentTimestamp = new Date();
             const endTimestamp = currentTimestamp.toISOString(); // Assuming your database uses ISO date format
@@ -138,8 +142,5 @@ async function updateMachineStatus(nodeId) {
     throw error;
   }
 }
-
-
-
 
 module.exports = { createWebSocketServer, connections };
