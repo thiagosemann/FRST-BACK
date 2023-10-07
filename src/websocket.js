@@ -51,6 +51,8 @@ function createWebSocketServer(server) {
       // Lide com o evento 'pong' para cancelar o tempo limite
       ws.on('pong', () => {
         clearTimeout(pingTimeout);
+        console.log(`Pong received from client (ID: ${getConnectionNodeId(ws)})`);
+
       });
     });
 
