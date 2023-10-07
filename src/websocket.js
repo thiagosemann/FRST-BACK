@@ -57,7 +57,7 @@ function createWebSocketServer(server) {
         client.ping();
       }
     });
-  }, 30000);
+  }, 10000);
 }
 
 async function logConnectionStatus(nodeId, connected) {
