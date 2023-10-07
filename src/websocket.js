@@ -39,11 +39,11 @@ function createWebSocketServer(server) {
 
     // Handle 'ping' and 'pong' events
     ws.on('ping', () => {
-      console.log('Ping received from client');
+      console.log(`Ping received from client (ID: ${getConnectionNodeId(ws)})`);
     });
 
     ws.on('pong', () => {
-      console.log('Pong received from client');
+      console.log(`Pong received from client (ID: ${getConnectionNodeId(ws)})`);
     });
 
     ws.on('close', () => {
@@ -141,6 +141,11 @@ async function updateMachineStatus(nodeId) {
   } catch (error) {
     throw error;
   }
+}
+
+function getConnectionNodeId(ws) {
+  const connection = connections.find((conn) => conn.ws === ws);
+  return connection ? connection.nodeId : 'unknown';
 }
 
 module.exports = { createWebSocketServer, connections };
