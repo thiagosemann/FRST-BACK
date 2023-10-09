@@ -87,7 +87,7 @@ async function updateMachineStatus(nodeId) {
     if (machines.length > 0) {
       const machineId = machines[0].id;
 
-      // Update the machine status
+      // Update the machine status//
       const query = 'UPDATE Machines SET is_in_use = ? WHERE id = ?';
       const [result] = await connection.execute(query, [false, machineId]);
 
