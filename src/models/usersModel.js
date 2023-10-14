@@ -78,7 +78,6 @@ const getUser = async (id) => {
 const updateUser = async (id, user) => {
   const { first_name, last_name, cpf, email, data_nasc, telefone, credito, password, role, apt_name } = user;
 
-  // Check if the user exists
   const getUserQuery = 'SELECT * FROM users WHERE id = ?';
   const [existingUsers] = await connection.execute(getUserQuery, [id]);
 
@@ -86,46 +85,21 @@ const updateUser = async (id, user) => {
     throw new Error('Usuário não encontrado.');
   }
 
-  // Update the user data
-  const updateUserData = [
-    first_name,
-    last_name,
-    cpf,
-    email,
-    data_nasc,
-    telefone,
-    credito,
-    role,
-    apt_name,
-    id,
-  ];
-
-  let updateUserQuery;
-  let values;
-
-  // Check if a new password is provided
+  let hashedPassword = null;
   if (password) {
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    updateUserQuery = `
-      UPDATE users 
-      SET first_name = ?, last_name = ?, cpf = ?, email = ?, data_nasc = ?, telefone = ?, credito = ?, password = ?, role = ?, apt_name = ?
-      WHERE id = ?
-    `;
-
-    values = [
-      ...updateUserData,
-      hashedPassword,
-    ];
-  } else {
-    updateUserQuery = `
-      UPDATE users 
-      SET first_name = ?, last_name = ?, cpf = ?, email = ?, data_nasc = ?, telefone = ?, credito = ?, role = ?, apt_name = ?
-      WHERE id = ?
-    `;
-
-    values = updateUserData;
+    hashedPassword = await bcrypt.hash(password, saltRounds);
   }
+
+  const updateUserQuery = `
+    UPDATE users 
+    SET first_name = ?, last_name = ?, cpf = ?, email = ?, data_nasc = ?, telefone = ?, credito = ?, role = ?, apt_name = ? 
+    ${password ? ', password = ?' : ''} 
+    WHERE id = ?
+  `;
+
+  const values = password
+    ? [first_name, last_name, cpf, email, data_nasc, telefone, credito, role, apt_name, hashedPassword, id]
+    : [first_name, last_name, cpf, email, data_nasc, telefone, credito, role, apt_name, id];
 
   try {
     await connection.execute(updateUserQuery, values);
