@@ -76,7 +76,7 @@ const getUser = async (id) => {
 };
 
 const updateUser = async (id, user) => {
-  const { first_name, last_name, cpf, email, data_nasc, telefone, credito, password, role } = user;
+  const { first_name, last_name, cpf, email, data_nasc, telefone, credito, password, role, apt_name } = user;
 
   // Check if the user exists
   const getUserQuery = 'SELECT * FROM users WHERE id = ?';
@@ -87,15 +87,45 @@ const updateUser = async (id, user) => {
   }
 
   // Update the user data
-  const updateUserQuery = `
-    UPDATE users 
-    SET first_name = ?, last_name = ?, cpf = ?, email = ?, data_nasc = ?, telefone = ?, credito = ?, password = ?, role = ?
-    WHERE id = ?
-  `;
+  const updateUserData = [
+    first_name,
+    last_name,
+    cpf,
+    email,
+    data_nasc,
+    telefone,
+    credito,
+    role,
+    apt_name,
+    id,
+  ];
 
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  let updateUserQuery;
+  let values;
 
-  const values = [first_name, last_name, cpf, email, data_nasc, telefone, credito, hashedPassword, role, id];
+  // Check if a new password is provided
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    updateUserQuery = `
+      UPDATE users 
+      SET first_name = ?, last_name = ?, cpf = ?, email = ?, data_nasc = ?, telefone = ?, credito = ?, password = ?, role = ?, apt_name = ?
+      WHERE id = ?
+    `;
+
+    values = [
+      ...updateUserData,
+      hashedPassword,
+    ];
+  } else {
+    updateUserQuery = `
+      UPDATE users 
+      SET first_name = ?, last_name = ?, cpf = ?, email = ?, data_nasc = ?, telefone = ?, credito = ?, role = ?, apt_name = ?
+      WHERE id = ?
+    `;
+
+    values = updateUserData;
+  }
 
   try {
     await connection.execute(updateUserQuery, values);
@@ -105,6 +135,7 @@ const updateUser = async (id, user) => {
     throw error;
   }
 };
+
 
 const getUsersByBuilding = async (building_id) => {
   const query = 'SELECT * FROM users WHERE building_id = ?';
