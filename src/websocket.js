@@ -30,7 +30,12 @@ function createWebSocketServer(server) {
         // Armazene o ID do NodeMCU juntamente com a conexão, se necessário
         connections.push({ ws, nodeId: nodeId, connected: true });
         logConnectionStatus(nodeId, true); // Registrar conexão bem-sucedida
-      } else {
+      } else if(messageString.startsWith('NID:')){
+        const nodeId = messageString.slice(4);
+        // Armazene o ID do NodeMCU juntamente com a conexão, se necessário
+        connections.push({ ws, nodeId: nodeId, connected: true });
+        logConnectionStatus(nodeId, true); // Registrar conexão bem-sucedida
+      }else {
         const parts = messageString.split(':');
         // Enviar resposta para o cliente WebSocket como texto
         ws.send(messageString);
