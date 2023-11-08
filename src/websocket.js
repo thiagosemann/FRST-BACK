@@ -44,11 +44,11 @@ function createWebSocketServer(server) {
 
     // Handle 'ping' and 'pong' events
     ws.on('ping', () => {
-      console.log(`Ping received from client (ID: ${getConnectionNodeId(ws)})`);
+     // console.log(`Ping received from client (ID: ${getConnectionNodeId(ws)})`);
     });
 
     ws.on('pong', () => {
-      console.log(`Pong received from client (ID: ${getConnectionNodeId(ws)})`);
+      //console.log(`Pong received from client (ID: ${getConnectionNodeId(ws)})`);
     });
 
     ws.on('close', () => {
