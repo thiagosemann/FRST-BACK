@@ -24,13 +24,14 @@ const loginUser = async (request, response) => {
   try {
     const { email, password } = request.body;
 
-    const result = await usersModel.loginUser(email,password);
+    const result = await usersModel.loginUser(email, password);
     if (result) {
       // Autenticação bem-sucedida
       // Retorna o token e o usuário
       return response.status(200).json({ user: result.user, token: result.token });
     } else {
       // Autenticação falhou
+      console.error('Autenticação falhou: Login ou senha incorretos.');
       return response.status(401).json({ message: 'Login ou senha incorretos.' });
     }
   } catch (error) {
@@ -38,6 +39,7 @@ const loginUser = async (request, response) => {
     return response.status(500).json({ error: 'Erro ao realizar login' });
   }
 };
+
 
 const getUser = async (request, response) => {
   try {
