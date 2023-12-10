@@ -31,6 +31,23 @@ const getTransactionByUsageHistoryId = async (req, res) => {
   }
 };
 
+const updateTransactionById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedTransaction = req.body;
+    
+    const isUpdated = await Transaction.updateTransactionById(id, updatedTransaction);
+
+    if (isUpdated) {
+      res.json({ message: 'Transaction updated successfully' });
+    } else {
+      res.status(404).json({ message: 'Transaction not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const deleteTransactionById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -50,5 +67,6 @@ module.exports = {
   getAllTransactions,
   createTransaction,
   getTransactionByUsageHistoryId,
+  updateTransactionById, // Adicionando a função de atualização
   deleteTransactionById
 };

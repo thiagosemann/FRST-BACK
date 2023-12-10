@@ -59,7 +59,9 @@ router.delete('/usageHistory/:id', verifyToken, usageHistoryController.deleteUsa
 router.get('/transactions', verifyToken, transactionsController.getAllTransactions);
 router.post('/transactions', verifyToken, validateTransaction, transactionsController.createTransaction);
 router.get('/transactions/:id', verifyToken, transactionsController.getTransactionByUsageHistoryId);
+router.put('/transactions/:id', verifyToken, transactionsController.updateTransactionById); // Adicionando a rota de atualização
 router.delete('/transactions/:id', verifyToken, transactionsController.deleteTransactionById);
+
 
 // Rotas nodemcu
 router.get('/nodemcu/on/:id', nodemcuController.turnOn);
