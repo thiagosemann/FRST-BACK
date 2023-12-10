@@ -26,23 +26,24 @@ const deleteTransactionById = async (transactionId) => {
   }
 };
 
-const updateTransactionById = async (transactionId, updatedTransaction) => {
+const updateTransactionById = async (updatedTransaction, usageHistoryId) => {
   try {
-    const { user_id, usage_history_id, transaction_time, amount } = updatedTransaction;
-    
+    const { user_id, transaction_time, amount } = updatedTransaction;
+
     const query = `
       UPDATE Transactions
-      SET user_id = ?, usage_history_id = ?, transaction_time = ?, amount = ?
-      WHERE id = ?
+      SET user_id = ?, transaction_time = ?, amount = ?
+      WHERE usage_history_id = ?
     `;
-    
-    const [result] = await connection.execute(query, [user_id, usage_history_id, transaction_time, amount, transactionId]);
+
+    const [result] = await connection.execute(query, [user_id, transaction_time, amount, usageHistoryId]);
 
     return result.affectedRows > 0; // Retorna verdadeiro se uma linha foi afetada (atualizada)
   } catch (error) {
     throw error;
   }
 };
+
 
 
 module.exports = {

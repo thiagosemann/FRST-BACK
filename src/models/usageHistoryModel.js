@@ -90,14 +90,22 @@ const getAllUsageHistoryByMachine = async (machineId) => {
 const updateUsageHistory = async (usageHistory) => {
   try {
     const { id, end_time, total_cost } = usageHistory;
-    const query = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
-    await connection.execute(query, [end_time, total_cost, id]);
+
+    // Atualizar a tabela UsageHistory
+    const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
+    await connection.execute(usageHistoryQuery, [end_time, total_cost, id]);
+
+    // Atualizar a tabela Transactions
+    const transactionQuery = 'UPDATE Transactions SET transaction_time = ?, amount = ? WHERE usage_history_id = ?';
+    await connection.execute(transactionQuery, [end_time, total_cost, id]);
+
     return { id, end_time, total_cost };
   } catch (err) {
     console.error('Error updating usage history:', err);
     throw new Error('Failed to update usage history');
   }
 };
+
 
 const deleteUsageHistoryById = async (usageHistoryId) => {
   try {
