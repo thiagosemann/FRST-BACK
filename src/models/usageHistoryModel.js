@@ -124,6 +124,7 @@ const updateCompleteUsageHistory = async (usageHistory) => {
 
 
 
+
 const deleteUsageHistoryById = async (usageHistoryId) => {
   try {
     const [result] = await connection.execute('DELETE FROM UsageHistory WHERE id = ?', [usageHistoryId]);

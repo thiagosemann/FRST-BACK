@@ -81,7 +81,8 @@ const updateCompleteUsageHistory = async (req, res) => {
     });
     res.json(updatedUsage);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('Error updating complete usage history:', err);
+    res.status(500).json({ message: err.message || 'Failed to update complete usage history' });
   }
 };
 
