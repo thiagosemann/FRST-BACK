@@ -52,6 +52,7 @@ router.get('/usageHistory/:buildingId/:month', verifyToken, usageHistoryControll
 
 router.post('/usageHistory', verifyToken, usageHistoryController.createUsageHistory);
 router.put('/usageHistory/:id', verifyToken, usageHistoryController.updateUsageHistory);
+router.put('/updateCompleteUsageHistory/:id', verifyToken, usageHistoryController.updateCompleteUsageHistory);
 
 router.delete('/usageHistory/:id', verifyToken, usageHistoryController.deleteUsageHistoryById);
 

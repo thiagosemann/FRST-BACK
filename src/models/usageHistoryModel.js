@@ -95,16 +95,33 @@ const updateUsageHistory = async (usageHistory) => {
     const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
     await connection.execute(usageHistoryQuery, [end_time, total_cost, id]);
 
+    return { id, end_time, total_cost };
+  } catch (err) {
+    console.error('Error updating partial usage history:', err);
+    throw new Error('Failed to update partial usage history');
+  }
+};
+
+const updateCompleteUsageHistory = async (usageHistory) => {
+  try {
+    const { id, start_time, end_time, total_cost, machine_id } = usageHistory;
+
+    // Atualizar a tabela UsageHistory
+    const usageHistoryQuery = 'UPDATE UsageHistory SET start_time = ?, end_time = ?, total_cost = ?, machine_id = ? WHERE id = ?';
+    await connection.execute(usageHistoryQuery, [start_time, end_time, total_cost, machine_id, id]);
+
     // Atualizar a tabela Transactions
     const transactionQuery = 'UPDATE Transactions SET transaction_time = ?, amount = ? WHERE usage_history_id = ?';
     await connection.execute(transactionQuery, [end_time, total_cost, id]);
 
-    return { id, end_time, total_cost };
+    return { id, start_time, end_time, total_cost, machine_id };
   } catch (err) {
-    console.error('Error updating usage history:', err);
-    throw new Error('Failed to update usage history');
+    console.error('Error updating complete usage history:', err);
+    throw new Error('Failed to update complete usage history');
   }
 };
+
+
 
 
 const deleteUsageHistoryById = async (usageHistoryId) => {
@@ -123,5 +140,6 @@ module.exports = {
   getAllUsageHistoryByMachine,
   updateUsageHistory,
   deleteUsageHistoryById,
-  getUsageHistoryByBuildingAndMonth
+  getUsageHistoryByBuildingAndMonth,
+  updateCompleteUsageHistory
 };

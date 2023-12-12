@@ -69,6 +69,22 @@ const updateUsageHistory = async (req, res) => {
   }
 };
 
+const updateCompleteUsageHistory = async (req, res) => {
+  try {
+    const { id, start_time, end_time, total_cost, machine_id } = req.body;
+    const updatedUsage = await updateCompleteUsageHistory({
+      id,
+      start_time,
+      end_time,
+      total_cost,
+      machine_id,
+    });
+    res.json(updatedUsage);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 const deleteUsageHistoryById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -94,5 +110,5 @@ module.exports = {
   updateUsageHistory,
   deleteUsageHistoryById,
   getUsageHistoryByBuildingAndMonth,
-
+  updateCompleteUsageHistory
 };
