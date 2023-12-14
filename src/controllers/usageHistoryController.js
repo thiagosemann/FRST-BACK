@@ -72,7 +72,7 @@ const updateUsageHistory = async (req, res) => {
 const updateCompleteUsageHistory = async (req, res) => {
   try {
     const { id, start_time, end_time, total_cost, machine_id } = req.body;
-    const updatedUsage = await updateCompleteUsageHistory({
+    const updatedUsage = await UsageHistory.updateCompleteUsageHistory({
       id,
       start_time,
       end_time,
@@ -85,6 +85,9 @@ const updateCompleteUsageHistory = async (req, res) => {
     res.status(500).json({ message: err.message || 'Failed to update complete usage history' });
   }
 };
+
+
+
 
 const deleteUsageHistoryById = async (req, res) => {
   try {
