@@ -27,7 +27,7 @@ const turnOn = (req, res) => {
       }
     }, 10000); // Timeout de 10 segundos (ajuste conforme necessário)
 
-    targetConnection.ws.on('message', (message) => {
+    targetConnection.ws.once('message', (message) => {
       const messageString = message.toString();
       console.log(`Recebido mensagem do NodeMCU ${nodeId}: ${messageString}`);
       if (messageString === 'RelayStatus:ON') {
@@ -78,7 +78,7 @@ const turnOff = (req, res) => {
       }
     }, 10000); // Timeout de 10 segundos (ajuste conforme necessário)
 
-    targetConnection.ws.on('message', (message) => {
+    targetConnection.ws.once('message', (message) => {
       const messageString = message.toString();
       console.log(`Recebido mensagem do NodeMCU ${nodeId}: ${messageString}`);
       if (messageString === 'RelayStatus:OFF') {
