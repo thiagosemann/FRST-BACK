@@ -71,7 +71,7 @@ const updateUsageHistory = async (req, res) => {
 
 const updateCompleteUsageHistory = async (req, res) => {
   try {
-    const { id, start_time, end_time, total_cost, machine_id } = req.body;
+    const { id, start_time, end_time, total_cost, machine_id, user_id} = req.body;
     const updatedUsage = await UsageHistory.updateCompleteUsageHistory({
       id,
       start_time,
