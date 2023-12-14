@@ -78,6 +78,7 @@ const updateCompleteUsageHistory = async (req, res) => {
       end_time,
       total_cost,
       machine_id,
+      user_id
     });
     res.json(updatedUsage);
   } catch (err) {

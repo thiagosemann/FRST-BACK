@@ -104,17 +104,17 @@ const updateUsageHistory = async (usageHistory) => {
 
 const updateCompleteUsageHistory = async (usageHistory) => {
   try {
-    const { id, start_time, end_time, total_cost, machine_id } = usageHistory;
+    const { id, start_time, end_time, total_cost, machine_id, user_id } = usageHistory;
 
     // Atualizar a tabela UsageHistory
-    const usageHistoryQuery = 'UPDATE UsageHistory SET start_time = ?, end_time = ?, total_cost = ?, machine_id = ? WHERE id = ?';
-    await connection.execute(usageHistoryQuery, [start_time, end_time, total_cost, machine_id, id]);
+    const usageHistoryQuery = 'UPDATE UsageHistory SET start_time = ?, end_time = ?, total_cost = ?, machine_id = ?, user_id = ? WHERE id = ?';
+    await connection.execute(usageHistoryQuery, [start_time, end_time, total_cost, machine_id,user_id, id]);
 
     // Atualizar a tabela Transactions
-    const transactionQuery = 'UPDATE Transactions SET transaction_time = ?, amount = ? WHERE usage_history_id = ?';
-    await connection.execute(transactionQuery, [end_time, total_cost, id]);
+    const transactionQuery = 'UPDATE Transactions SET transaction_time = ?, amount = ?, user_id = ? WHERE usage_history_id = ?';
+    await connection.execute(transactionQuery, [end_time, total_cost,user_id, id]);
 
-    return { id, start_time, end_time, total_cost, machine_id };
+    return { id, start_time, end_time, total_cost, machine_id,user_id };
   } catch (err) {
     console.error('Error updating complete usage history:', err);
     throw new Error('Failed to update complete usage history');
