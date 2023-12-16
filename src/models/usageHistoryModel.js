@@ -89,8 +89,14 @@ const getAllUsageHistoryByMachine = async (machineId) => {
 
 const updateUsageHistory = async (usageHistory) => {
   try {
-    const { id, end_time, total_cost } = usageHistory;
+    if (!isValidISO8601(end_time)) {
+      console.warn('A data não está em um formato válido. Utilizando a data atual do servidor.');
+      // Substituir end_time pela data e hora atual do servidor em formato ISO 8601
+      const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
+      usageHistory.end_time = currentDate;
+    }
 
+    const { id, end_time, total_cost } = usageHistory;
     // Atualizar a tabela UsageHistory
     const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
     await connection.execute(usageHistoryQuery, [end_time, total_cost, id]);
