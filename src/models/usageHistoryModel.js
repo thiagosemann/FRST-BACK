@@ -89,6 +89,7 @@ const getAllUsageHistoryByMachine = async (machineId) => {
 
 const updateUsageHistory = async (usageHistory) => {
   try {
+    // Verificar se a data está no formato correto (ISO 8601)
     if (!isValidISO8601(end_time)) {
       console.warn('A data não está em um formato válido. Utilizando a data atual do servidor.');
       // Substituir end_time pela data e hora atual do servidor em formato ISO 8601
