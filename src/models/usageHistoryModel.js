@@ -134,6 +134,28 @@ const deleteUsageHistoryById = async (usageHistoryId) => {
   }
 };
 
+const getUsageHistoryByID = async (usageHistoryId) => {
+  try {
+    const query = `
+      SELECT UH.*, U.apt_name, M.name AS machine_name
+      FROM UsageHistory UH
+      INNER JOIN users U ON UH.user_id = U.id
+      INNER JOIN Machines M ON UH.machine_id = M.id
+      WHERE UH.id = ?
+    `;
+    const [rows] = await connection.execute(query, [usageHistoryId]);
+    
+    if (rows.length === 0) {
+      throw new Error('Usage history not found');
+    }
+
+    return rows[0];
+  } catch (err) {
+    console.error('Error retrieving usage history by ID:', err);
+    throw new Error('Failed to retrieve usage history by ID');
+  }
+};
+
 module.exports = {
   getAllUsageHistoryByUser,
   getAllUsageHistory,
@@ -142,5 +164,6 @@ module.exports = {
   updateUsageHistory,
   deleteUsageHistoryById,
   getUsageHistoryByBuildingAndMonth,
-  updateCompleteUsageHistory
+  updateCompleteUsageHistory,
+  getUsageHistoryByID
 };
