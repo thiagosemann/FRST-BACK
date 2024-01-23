@@ -91,7 +91,27 @@ const encerrarUsageHistory = async (lastUsage, building) => {
     }
   };
 
+const removerEncerramentoUsageHistory = async (lastUsage) => {
+    try {
+        // Definir end_time e total_cost como NULL para remover o encerramento
+        const end_time = null;
+        const total_cost = null;
+        const { id } = lastUsage;
 
+        // Atualizar a tabela UsageHistory
+        const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
+        const [result] = await connection.execute(usageHistoryQuery, [end_time, total_cost, id]);
+
+        // Atualizar os valores em lastUsage
+        lastUsage.end_time = end_time;
+        lastUsage.total_cost = total_cost;
+
+        return { lastUsage };
+    } catch (err) {
+        console.error('Error removing usage history closure:', err);
+        throw new Error('Failed to remove usage history closure');
+    }
+};
 
 
 const desligarNodemcu = (nodeId) => {
@@ -155,6 +175,8 @@ const desligarNodemcu = (nodeId) => {
 
 
 
+
+
 //-------------------------------------------------------------------------Extras-------------------------------------------------------------------------//
 
 const updateMachineStatus = async (machineId, newStatus) => {
@@ -190,5 +212,6 @@ module.exports = {
     ligarNodeMcu,
     updateMachineStatus,
     encerrarUsageHistory,
-    desligarNodemcu
+    desligarNodemcu,
+    removerEncerramentoUsageHistory
 };

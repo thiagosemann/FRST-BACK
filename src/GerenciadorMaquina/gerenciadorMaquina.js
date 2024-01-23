@@ -97,16 +97,16 @@ const desligarMaquina = async (req, res) => {
                 try {
                     // Tentar ligar o NodeMCU usando await
                     const nodeMcuResp = await Utilidades.desligarNodemcu(machine.idNodemcu);
-    
                     if (nodeMcuResp.success) {
                         // Atualizar o status da máquina no banco de dados
                         const machineStatus = await Utilidades.updateMachineStatus(machine.id,false);
-    
                         if (machineStatus) {
                             // Máquina ligada com sucesso
                             res.status(200).json({ message: "Máquina desligada com sucesso!" });
                         } else {
-                            // Deletar transaction, remover o encerramento do usageHistory e religar o NodeMcu
+                            await TransactionModel.deleteTransactionById(createTransactions)
+                            await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building })
+                            await Utilidades.ligarNodeMcu(machine.idNodemcu);
                             res.status(500).json({ message: "Falha ao mudar status máquina." });
                         }
                     } else {
@@ -114,11 +114,13 @@ const desligarMaquina = async (req, res) => {
                         res.status(500).json({ message: "Falha ao ligar máquina." });
                     }
                 } catch (error) {
-                    // Deletar transaction e remover o encerramento do usageHistory
+                    // Deletar transaction
+                    await TransactionModel.deleteTransactionById(createTransactions)
+                    await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building })
                     res.status(500).json({ message: `Erro ao ligar NodeMCU: ${error.message}` });
                 }
             }else{
-                // Remover o total_cost e o end_time do usageHistory
+                await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building })
                 res.status(500).json({ message: "Falha ao criar transaction." });
             }
         }else{
@@ -132,34 +134,6 @@ const desligarMaquina = async (req, res) => {
         res.status(500).json({ message: "Erro no processamento: " + err.message });
     }
 };
-
-const ligarMaquinaFicha = (id_maquina,id_user) => {
-    // Verificar se NODEMCU está conectado. Caso contrario devolver mensagem de erro.
-    // Verificar se Maquina está em liberada.   Caso contrario devolver mensagem de erro.
-    // Criar usageHistory, se der certo mandar ligar nodemcu. Se der errado mensagem de erro.
-    // Se o nodemcu ligar, mudar o status da maquina para ligado.
-    // Se o nodemcu der errado , e mudar o status da maquina para desligada e deletar o usageHistory criado.
-};
-
-const desligarMaquinaFicha = (id_maquina,id_user) => {
-    // Pegar atributos maquina 
-    // Pegar o valor da hora do prédio.
-    // Verificar se NODEMCU está conectado. Caso contrario devolver mensagem de erro.
-    // Verificar se Maquina está em uso pelo usuario. Caso contrario devolver mensagem de erro. Se for Admin não precisa.
-    // Encerrar usageHistory. Caso contrario devolver mensagem de erro.
-    // Criar transaction. Caso contrario devolver mensagem de erro e remove o encerramento do usageHistory.
-    // Desligar NodeMcu. Em caso de erro, deletar transaction e remover o encerramento do usageHistory. Devolver mensagem de erro.
-    // Mudar status maquina. Caso de erro,  deletar transaction, remover o encerramento do usageHistory e religar o NodeMcu.
-    // Criar função de deletar transaction, devolvendo mensagem de erro.
-    // Criar função de remover o encerramento do usageHistory, devolvendo mensagem de erro.
-    // Criar função de Encerrar usageHistory, devolvendo mensagem de erro.
-    // Criar função de Criar transaction, devolvendo mensagem de erro.
-    // Criar função de Desligar NodeMcu, devolvendo mensagem de erro.
-    // Criar função de Mudar status maquina, devolvendo mensagem de erro.
-};
-
-
-
 
 module.exports = {
     desligarMaquina,
