@@ -14,6 +14,7 @@ const validateBuilding = require('./middlewares/buildingsMiddleware');
 const validateTransaction = require('./middlewares/transactionMiddleware');
 const verifyToken = require('./middlewares/authMiddleware');
 
+const gerenciadorMaquina = require('./GerenciadoMaquina/gerenciadorMaquina');
 
 
 // User routes
@@ -77,6 +78,9 @@ router.post('/disconnections', verifyToken, controleConexao.createDisconnection)
 router.get('/disconnections/machine/:id', verifyToken, controleConexao.getDisconnectionsByMachineId);
 
 
+// Rotas para o gerenciador de Maquina
+router.post('/gerenciadorMaquina/ligar', verifyToken, gerenciadorMaquina.ligarMaquina);
+router.post('/gerenciadorMaquina/desligar', verifyToken, gerenciadorMaquina.desligarMaquina);
 
 
 module.exports = router;

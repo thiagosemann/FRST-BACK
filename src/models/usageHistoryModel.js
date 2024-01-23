@@ -66,10 +66,6 @@ const getUsageHistoryByBuildingAndMonth = async (buildingId, yearMonth) => {
 };
 
 
-
-
-
-
 const createUsageHistory = async (usage) => {
   try {
     const { user_id, machine_id, start_time } = usage;
