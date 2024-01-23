@@ -14,7 +14,7 @@ const validateBuilding = require('./middlewares/buildingsMiddleware');
 const validateTransaction = require('./middlewares/transactionMiddleware');
 const verifyToken = require('./middlewares/authMiddleware');
 
-const gerenciadorMaquina = require('./GerenciadoMaquina/gerenciadorMaquina');
+const gerenciadorMaquina = require('./GerenciadorMaquina/gerenciadorMaquina');
 
 
 // User routes
