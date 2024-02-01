@@ -18,7 +18,6 @@ const ligarMaquina = async (req, res) => {
 
         // Verificar se a máquina está conectada
         const targetConnection = connections.find((connection) => connection.nodeId === machine.idNodemcu);
-        console.log("Target connection:", targetConnection);
 
         if (!targetConnection) {
             console.log("Máquina não está conectada!");
