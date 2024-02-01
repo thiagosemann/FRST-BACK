@@ -4,6 +4,7 @@ const MachineModel = require('../models/machineModel');
 const UserModel = require('../models/usersModel');
 const BuildingsModel = require('../models/buildingsModel')
 const TransactionModel = require('../models/transactionModel');
+const UsageHistory = require('../models/usageHistoryModel');
 
 const ligarMaquina = async (req, res) => {
     try {
@@ -31,7 +32,7 @@ const ligarMaquina = async (req, res) => {
         }
 
         // Criar registro de histórico de uso
-        const newUsage = await Utilidades.createUsageHistory({ id_user, id_maquina });
+        const newUsage = await Utilidades.createUsageHistory({ user_id: id_user, machine_id: id_maquina });
         console.log("New usage history:", newUsage);
 
         if (newUsage) {
@@ -85,7 +86,7 @@ const desligarMaquina = async (req, res) => {
         const machine = await MachineModel.getMachineById(id_maquina);
         console.log("Machine details:", machine);
 
-        const machineUsagHistory = await MachineModel.getAllUsageHistoryByMachine(id_maquina);
+        const machineUsagHistory = await UsageHistory.getAllUsageHistoryByMachine(id_maquina);
         console.log("Machine usage history:", machineUsagHistory);
 
         const lastUsage = machineUsagHistory[machineUsagHistory.length-1];
