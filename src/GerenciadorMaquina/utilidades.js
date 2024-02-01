@@ -79,7 +79,7 @@ const ligarNodeMcu = (nodeId) => {
 const encerrarUsageHistory = async (lastUsage, building) => {
     try {
         const end_time = new Date();
-        const total_cost = calculateCost(building.hourly_rate,lastUsage.start_time,endTime);
+        const total_cost = calculateCost(building.hourly_rate,lastUsage.start_time,end_time);
         const {id} = lastUsage
         // Atualizar a tabela UsageHistory
         const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
