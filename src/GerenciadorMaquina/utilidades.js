@@ -5,9 +5,9 @@ const { wss, connections } = require('../websocket');
 
 //-------------------------------------------------------------------------Ligar Maquina-------------------------------------------------------------------------//
 const createUsageHistory = async (usage) => {
+    console.log(new Date())
     try {
       const { user_id, machine_id } = usage;
-      console.log("usage",usage)
       const start_time = new Date();
       const query = 'INSERT INTO UsageHistory (user_id, machine_id, start_time) VALUES (?, ?, ?)';
       const [result] = await connection.execute(query, [user_id, machine_id, start_time]);
