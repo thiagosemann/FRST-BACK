@@ -87,7 +87,6 @@ const desligarMaquina = async (req, res) => {
         console.log("Machine details:", machine);
 
         const machineUsagHistory = await UsageHistory.getAllUsageHistoryByMachine(id_maquina);
-        console.log("Machine usage history:", machineUsagHistory);
 
         const lastUsage = machineUsagHistory[machineUsagHistory.length-1];
         console.log("Last usage:", lastUsage);
@@ -118,10 +117,10 @@ const desligarMaquina = async (req, res) => {
 
         if (usageHistoryEncerrada) {
             const transaction = {
-                user_id: usageHistoryEncerrada.user_id,
-                usage_history_id: usageHistoryEncerrada.id || 0,
-                transaction_time: usageHistoryEncerrada.end_time,
-                amount: usageHistoryEncerrada.total_cost || 0
+                user_id: usageHistoryEncerrada.lastUsage.user_id,
+                usage_history_id: usageHistoryEncerrada.lastUsage.id || 0,
+                transaction_time: usageHistoryEncerrada.lastUsage.end_time,
+                amount: usageHistoryEncerrada.lastUsage.total_cost || 0
             };
             console.log("Transaction details:", transaction);
 
