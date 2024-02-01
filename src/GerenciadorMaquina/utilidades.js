@@ -120,7 +120,6 @@ const desligarNodemcu = (nodeId) => {
     return new Promise((resolve, reject) => {
         try {
             const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
-            console.log("connections",connections)
             if (targetConnection) {
                 console.log(`Enviando comando para desligar NodeMCU ${nodeId}`);
                 const binaryMessage = Buffer.from([0x02]);
