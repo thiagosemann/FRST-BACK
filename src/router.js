@@ -8,13 +8,13 @@ const usageHistoryController = require('./controllers/usageHistoryController');
 const transactionsController = require('./controllers/transactionController');
 const nodemcuController = require('./controllers/nodemcuController');
 const controleConexao = require('./controllers/controleConexaoController');
+const gerenciadorMaquina = require('./GerenciadorMaquina/gerenciadorMaquina');
 
 const validateMachine = require('./middlewares/machinesMiddleware');
 const validateBuilding = require('./middlewares/buildingsMiddleware');
 const validateTransaction = require('./middlewares/transactionMiddleware');
 const verifyToken = require('./middlewares/authMiddleware');
 
-const gerenciadorMaquina = require('./GerenciadorMaquina/gerenciadorMaquina');
 
 
 // User routes
