@@ -113,7 +113,7 @@ const desligarMaquina = async (req, res) => {
             return res.status(400).json({ message: "Máquina sendo utilizada por outro usuário!" });
         }
 
-        const usageHistoryEncerrada = await Utilidades.encerrarUsageHistory({ lastUsage,building });
+        const usageHistoryEncerrada = await Utilidades.encerrarUsageHistory( lastUsage,building );
         console.log("Usage history encerrada:", usageHistoryEncerrada);
 
         if (usageHistoryEncerrada) {
