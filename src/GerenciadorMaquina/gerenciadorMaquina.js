@@ -47,11 +47,12 @@ const ligarMaquina = async (req, res) => {
                             if (machineStatus) {
                                 // Máquina ligada com sucesso
                                 res.status(200).json({ message: "Máquina ligada com sucesso!" });
+                                break;
                             } else {
                                 // Falha ao atualizar o status da máquina
                                 console.log("Falha ao mudar status máquina.");
                                 res.status(500).json({ message: "Falha ao mudar status máquina." });
-                                
+                                break;
                             }
                         } else {
                             // Falha ao ligar o NodeMCU
@@ -145,12 +146,14 @@ const desligarMaquina = async (req, res) => {
                                 if (machineStatus) {
                                     // Máquina ligada com sucesso
                                     res.status(200).json({ message: "Máquina desligada com sucesso!" });
+                                    break;
                                 } else {
                                     await TransactionModel.deleteTransactionById(createTransactions.insertId);
                                     await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
                                     await Utilidades.ligarNodeMcu(machine.idNodemcu);
                                     res.status(500).json({ message: "Falha ao mudar status máquina." });
                                     console.log("Falha ao mudar status máquina.");
+                                    break;
                                 }
                             } else {
                                 // Falha ao ligar o NodeMCU
