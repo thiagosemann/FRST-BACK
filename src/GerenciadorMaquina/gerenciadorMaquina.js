@@ -136,12 +136,12 @@ const desligarMaquina = async (req, res) => {
                         // Atualizar o status da máquina no banco de dados
                         const machineStatus = await Utilidades.updateMachineStatus(machine.id,false);
                         console.log("Machine status updated:", machineStatus);
-
+ 
                         if (machineStatus) {
                             // Máquina ligada com sucesso
                             res.status(200).json({ message: "Máquina desligada com sucesso!" });
                         } else {
-                            await TransactionModel.deleteTransactionById(createTransactions);
+                            await TransactionModel.deleteTransactionById(createTransactions.insertId);
                             await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
                             await Utilidades.ligarNodeMcu(machine.idNodemcu);
                             console.log("Falha ao mudar status máquina.");
