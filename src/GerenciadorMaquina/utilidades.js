@@ -20,38 +20,18 @@ const createUsageHistory = async (usage) => {
 
 
 
-  const ligarNodeMcu = (nodeId, tentativas = 5) => {
+const ligarNodeMcu = (nodeId) => {
     return new Promise((resolve, reject) => {
         try {
             const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
             if (targetConnection) {
                 console.log(`Enviando comando para ligar NodeMCU ${nodeId}`);
-
-                const sendCommand = () => {
-                    const binaryMessage = Buffer.from([0x01]);
-                    targetConnection.ws.send(binaryMessage);
-                };
-
-                // Função para tentar enviar a mensagem a cada 10 segundos
-                const enviarMensagemInterval = setInterval(() => {
-                    if (tentativas > 0) {
-                        sendCommand();
-                        console.log(`Tentativa de envio para NodeMCU ${nodeId}, restam ${tentativas} tentativas.`);
-                        tentativas--;
-                    } else {
-                        clearInterval(enviarMensagemInterval);
-                        reject({
-                            success: false,
-                            message: `Falha ao ligar o NodeMCU ou relé não ativado após ${tentativas} tentativas.`,
-                            nodeId: nodeId,
-                        });
-                    }
-                }, 10000); // Intervalo de 10 segundos
+                const binaryMessage = Buffer.from([0x01]);
+                targetConnection.ws.send(binaryMessage);
 
                 // Aguardar até receber a confirmação específica do NodeMCU ou um timeout
                 let confirmationReceived = false;
                 const confirmationTimeout = setTimeout(() => {
-                    clearInterval(enviarMensagemInterval);
                     if (!confirmationReceived) {
                         console.log(`Timeout: Falha ao ligar o NodeMCU ou relé não ativado para NodeMCU ${nodeId}`);
                         reject({
@@ -60,10 +40,9 @@ const createUsageHistory = async (usage) => {
                             nodeId: nodeId,
                         });
                     }
-                }, 60000); // Timeout de 60 segundos
+                }, 10000); // Timeout de 10 segundos (ajuste conforme necessário)
 
                 targetConnection.ws.once('message', (message) => {
-                    clearInterval(enviarMensagemInterval);
                     const messageString = message.toString();
                     console.log(`Recebido mensagem do NodeMCU ${nodeId}: ${messageString}`);
                     if (messageString === 'RelayStatus:ON') {
@@ -95,7 +74,6 @@ const createUsageHistory = async (usage) => {
         }
     });
 };
-
 //-------------------------------------------------------------------------Desligar Maquina-------------------------------------------------------------------------//
 
 const encerrarUsageHistory = async (lastUsage, building) => {
@@ -138,7 +116,7 @@ const removerEncerramentoUsageHistory = async (lastUsage) => {
 };
 
 
-const desligarNodemcu = (nodeId, tentativas = 5) => {
+const desligarNodemcu = (nodeId) => {
     return new Promise((resolve, reject) => {
         try {
             const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
@@ -153,20 +131,13 @@ const desligarNodemcu = (nodeId, tentativas = 5) => {
                 const confirmationTimeout = setTimeout(() => {
                     if (!confirmationReceived) {
                         console.log(`Timeout: Falha ao desligar o NodeMCU para NodeMCU ${nodeId}`);
-                        if (tentativas > 0) {
-                            console.log(`Tentando novamente para NodeMCU ${nodeId}`);
-                            desligarNodemcu(nodeId, tentativas - 1)
-                                .then(resolve)
-                                .catch(reject);
-                        } else {
-                            reject({
-                                success: false,
-                                message: 'Timeout: Falha ao desligar o NodeMCU',
-                                nodeId: nodeId,
-                            });
-                        }
+                        reject({
+                            success: false,
+                            message: 'Timeout: Falha ao desligar o NodeMCU',
+                            nodeId: nodeId,
+                        });
                     }
-                }, 60000); // Timeout de 60 segundos
+                }, 10000); // Timeout de 10 segundos (ajuste conforme necessário)
 
                 targetConnection.ws.once('message', (message) => {
                     const messageString = message.toString();
@@ -202,7 +173,6 @@ const desligarNodemcu = (nodeId, tentativas = 5) => {
         }
     });
 };
-
 
 
 
