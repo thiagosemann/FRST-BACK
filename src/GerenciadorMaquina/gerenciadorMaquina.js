@@ -39,7 +39,6 @@ const ligarMaquina = async (req, res) => {
                         // Tentar ligar o NodeMCU usando await
                         const nodeMcuResp = await Utilidades.ligarNodeMcu(machine.idNodemcu);
                         console.log("NodeMCU response:", nodeMcuResp);
-
                         if (nodeMcuResp.success) {
                             // Atualizar o status da máquina no banco de dados
                             const machineStatus = await Utilidades.updateMachineStatus(machine.id,true);
@@ -48,25 +47,25 @@ const ligarMaquina = async (req, res) => {
                             if (machineStatus) {
                                 // Máquina ligada com sucesso
                                 res.status(200).json({ message: "Máquina ligada com sucesso!" });
-                                break;
                             } else {
                                 // Falha ao atualizar o status da máquina
                                 console.log("Falha ao mudar status máquina.");
                                 res.status(500).json({ message: "Falha ao mudar status máquina." });
-                                break;
                                 
                             }
                         } else {
                             // Falha ao ligar o NodeMCU
                             console.log("Falha ao ligar máquina.");
                             if(i==5){
-                            res.status(500).json({ message: "Falha ao ligar máquina." });
+                                res.status(500).json({ message: "Falha ao ligar máquina." });
                             }
                         }
                 } catch (error) {
                     // Lidar com erros da Promessa ligarNodeMcu
                     console.error(`Erro ao ligar NodeMCU: ${error.message}`);
-                    res.status(500).json({ message: `Erro ao ligar NodeMCU: ${error.message}` });
+                    if(i==5){
+                        res.status(500).json({ message: `Erro ao ligar NodeMCU: ${error.message}` });
+                    }
                 }
             }
         } else {
@@ -133,43 +132,43 @@ const desligarMaquina = async (req, res) => {
             console.log("Created transaction:", createTransactions);
 
             if(createTransactions){
-                try {
-                    // Tentar ligar o NodeMCU usando await
-                    const nodeMcuResp = await Utilidades.desligarNodemcu(machine.idNodemcu);
-                    console.log("NodeMCU response:", nodeMcuResp);
-                    for (let i=0;i<5;i++){
-                        if (nodeMcuResp.success) {
-                            // Atualizar o status da máquina no banco de dados
-                            const machineStatus = await Utilidades.updateMachineStatus(machine.id,false);
-                            console.log("Machine status updated:", machineStatus);
-     
-                            if (machineStatus) {
-                                // Máquina ligada com sucesso
-                                res.status(200).json({ message: "Máquina desligada com sucesso!" });
-                                break;
-
+                for (let i=0;i<5;i++){
+                    try {
+                        // Tentar ligar o NodeMCU usando await
+                        const nodeMcuResp = await Utilidades.desligarNodemcu(machine.idNodemcu);
+                        console.log("NodeMCU response:", nodeMcuResp);
+                            if (nodeMcuResp.success) {
+                                // Atualizar o status da máquina no banco de dados
+                                const machineStatus = await Utilidades.updateMachineStatus(machine.id,false);
+                                console.log("Machine status updated:", machineStatus);
+        
+                                if (machineStatus) {
+                                    // Máquina ligada com sucesso
+                                    res.status(200).json({ message: "Máquina desligada com sucesso!" });
+                                } else {
+                                    await TransactionModel.deleteTransactionById(createTransactions.insertId);
+                                    await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
+                                    await Utilidades.ligarNodeMcu(machine.idNodemcu);
+                                    res.status(500).json({ message: "Falha ao mudar status máquina." });
+                                    console.log("Falha ao mudar status máquina.");
+                                }
                             } else {
-                                await TransactionModel.deleteTransactionById(createTransactions.insertId);
-                                await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
-                                await Utilidades.ligarNodeMcu(machine.idNodemcu);
-                                console.log("Falha ao mudar status máquina.");
-                                res.status(500).json({ message: "Falha ao mudar status máquina." });
-                                break;
+                                // Falha ao ligar o NodeMCU
+                                console.log("Falha ao desligar máquina.");
+                                if(i==5){
+                                    res.status(500).json({ message: "Falha ao desligar máquina." });
+                                }
                             }
-                        } else {
-                            // Falha ao ligar o NodeMCU
-                            console.log("Falha ao desligar máquina.");
-                            if(i==5){
-                                res.status(500).json({ message: "Falha ao desligar máquina." });
-                            }
+                        
+                    } catch (error) {
+                        // Deletar transaction
+                        await TransactionModel.deleteTransactionById(createTransactions);
+                        await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
+                        console.error(`Erro ao ligar NodeMCU: ${error.message}`);
+                        if(i==5){
+                            res.status(500).json({ message: `Erro ao ligar NodeMCU: ${error.message}` });
                         }
                     }
-                } catch (error) {
-                    // Deletar transaction
-                    await TransactionModel.deleteTransactionById(createTransactions);
-                    await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
-                    console.error(`Erro ao ligar NodeMCU: ${error.message}`);
-                    res.status(500).json({ message: `Erro ao ligar NodeMCU: ${error.message}` });
                 }
             } else {
                 await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
