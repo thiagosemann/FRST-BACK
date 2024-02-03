@@ -34,7 +34,7 @@ const ligarMaquina = async (req, res) => {
         const newUsage = await Utilidades.createUsageHistory({ user_id: id_user, machine_id: id_maquina });
         console.log("New usage history:", newUsage);
         if (newUsage) {
-            for (let i=1;i<=5;i++){
+            for (let i=1;i<=10;i++){
                 try {
                         // Tentar ligar o NodeMCU usando await
                         const nodeMcuResp = await Utilidades.ligarNodeMcu(machine.idNodemcu);
@@ -57,14 +57,14 @@ const ligarMaquina = async (req, res) => {
                         } else {
                             // Falha ao ligar o NodeMCU
                             console.log("Falha ao ligar máquina.");
-                            if(i==5){
+                            if(i==10){
                                 res.status(500).json({ message: "Falha ao ligar máquina." });
                             }
                         }
                 } catch (error) {
                     // Lidar com erros da Promessa ligarNodeMcu
                     console.error(`Erro ao ligar NodeMCU: ${error.message}`);
-                    if(i==5){
+                    if(i==10){
                         res.status(500).json({ message: `Erro ao ligar NodeMCU: ${error.message}` });
                     }
                 }
@@ -133,7 +133,7 @@ const desligarMaquina = async (req, res) => {
             console.log("Created transaction:", createTransactions);
 
             if(createTransactions){
-                for (let i=0;i<5;i++){
+                for (let i=0;i<10;i++){
                     try {
                         // Tentar ligar o NodeMCU usando await
                         const nodeMcuResp = await Utilidades.desligarNodemcu(machine.idNodemcu);
@@ -158,7 +158,7 @@ const desligarMaquina = async (req, res) => {
                             } else {
                                 // Falha ao ligar o NodeMCU
                                 console.log("Falha ao desligar máquina.");
-                                if(i==5){
+                                if(i==10){
                                     res.status(500).json({ message: "Falha ao desligar máquina." });
                                 }
                             }
@@ -168,7 +168,7 @@ const desligarMaquina = async (req, res) => {
                         await TransactionModel.deleteTransactionById(createTransactions);
                         await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
                         console.error(`Erro ao ligar NodeMCU: ${error.message}`);
-                        if(i==5){
+                        if(i==10){
                             res.status(500).json({ message: `Erro ao ligar NodeMCU: ${error.message}` });
                         }
                     }

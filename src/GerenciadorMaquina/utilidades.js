@@ -40,7 +40,7 @@ const ligarNodeMcu = (nodeId) => {
                             nodeId: nodeId,
                         });
                     }
-                }, 10000); // Timeout de 10 segundos (ajuste conforme necessário)
+                }, 5000); // Timeout de 10 segundos (ajuste conforme necessário)
 
                 targetConnection.ws.once('message', (message) => {
                     const messageString = message.toString();
@@ -137,7 +137,7 @@ const desligarNodemcu = (nodeId) => {
                             nodeId: nodeId,
                         });
                     }
-                }, 10000); // Timeout de 10 segundos (ajuste conforme necessário)
+                }, 5000); // Timeout de 10 segundos (ajuste conforme necessário)
 
                 targetConnection.ws.once('message', (message) => {
                     const messageString = message.toString();
