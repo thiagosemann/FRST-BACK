@@ -142,15 +142,12 @@ const desligarMaquina = async (req, res) => {
                                 // Atualizar o status da máquina no banco de dados
                                 const machineStatus = await Utilidades.updateMachineStatus(machine.id,false);
                                 console.log("Machine status updated:", machineStatus);
-        
                                 if (machineStatus) {
                                     // Máquina ligada com sucesso
                                     res.status(200).json({ message: "Máquina desligada com sucesso!" });
                                     break;
                                 } else {
-                                    await TransactionModel.deleteTransactionById(createTransactions.insertId);
-                                    await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
-                                    await Utilidades.ligarNodeMcu(machine.idNodemcu);
+
                                     res.status(500).json({ message: "Falha ao mudar status máquina." });
                                     console.log("Falha ao mudar status máquina.");
                                     break;
@@ -164,9 +161,7 @@ const desligarMaquina = async (req, res) => {
                             }
                         
                     } catch (error) {
-                        // Deletar transaction
-                        await TransactionModel.deleteTransactionById(createTransactions);
-                        await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
+
                         console.error(`Erro ao ligar NodeMCU: ${error.message}`);
                         if(i==10){
                             res.status(500).json({ message: `Erro ao ligar NodeMCU: ${error.message}` });
@@ -174,7 +169,6 @@ const desligarMaquina = async (req, res) => {
                     }
                 }
             } else {
-                await Utilidades.removerEncerramentoUsageHistory({ lastUsage,building });
                 console.log("Falha ao criar transaction.");
                 res.status(500).json({ message: "Falha ao criar transaction." });
             }
