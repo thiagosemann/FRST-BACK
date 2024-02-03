@@ -9,5 +9,8 @@ const server = app.listen(PORT, HOST, () => {
   console.log('Server running on', HOST + ':' + PORT);
 });
 
+// Definindo o tempo limite do servidor para 60 segundos (60000 milissegundos)
+server.setTimeout(60000);
+
 const { createWebSocketServer } = require('./websocket');
 createWebSocketServer(server);
