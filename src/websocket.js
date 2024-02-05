@@ -120,7 +120,7 @@ async function updateMachineStatus(nodeId) {
             // Update the usage history with end time and total cost
             const updatedUsageHistory = {
               id: latestUsageHistory.id,
-              end_time: endTimestamp,
+              end_time: currentTimestamp,
               total_cost: totalCost
             };
             await usageHistoryModel.updateUsageHistory(updatedUsageHistory);
