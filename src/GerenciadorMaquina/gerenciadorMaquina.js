@@ -24,7 +24,7 @@ const ligarMaquina = async (req, res) => {
             return res.status(400).json({ message: "Máquina já está ligada!" });
         }
 
-        console.log("Ligando a máquina:"+ machine.idNodemcu + " para o usuário:" + user_id);
+        console.log("Ligando a máquina:"+ machine.idNodemcu + " para o usuário:" + id_user);
         
 
         // Chamar a função separada para lidar com a tentativa de ligar o NodeMCU
@@ -40,7 +40,7 @@ const ligarMaquina = async (req, res) => {
             // Criar registro de histórico de uso
             const newUsage = await Utilidades.createUsageHistory({ user_id: id_user, machine_id: id_maquina });
             if (newUsage) {
-                console.log("Máquina ligada:"+ machine.idNodemcu + " para o usuário:" + user_id)
+                console.log("Máquina ligada:"+ machine.idNodemcu + " para o usuário:" + id_user)
                 res.status(200).json({ message: "Máquina ligada com sucesso!" });
             } else {
                 // Falha ao criar o histórico de uso
@@ -86,7 +86,7 @@ const desligarMaquina = async (req, res) => {
             return res.status(400).json({ message: "Máquina sendo utilizada por outro usuário!" });
         }
 
-        console.log("Desligando a máquina:"+ machine.idNodemcu + " para o usuário:" + user_id);
+        console.log("Desligando a máquina:"+ machine.idNodemcu + " para o usuário:" + id_user);
 
         // Chamar a função separada para lidar com a tentativa de ligar o NodeMCU
         const desligarNodeMcuResult = await tentarDesligarNodeMcu(machine, res);
@@ -111,7 +111,7 @@ const desligarMaquina = async (req, res) => {
                 const machineStatus = await Utilidades.updateMachineStatus(machine.id,false);
                 if (machineStatus) {
                     // Máquina ligada com sucesso
-                    console.log("Máquina desligada:"+ machine.idNodemcu + " para o usuário:" + user_id);
+                    console.log("Máquina desligada:"+ machine.idNodemcu + " para o usuário:" + id_user);
 
                     res.status(200).json({ message: "Máquina desligada com sucesso!" });
                 } else {
@@ -157,7 +157,7 @@ const ligarMaquinaIndustrial = async (req, res) => {
             console.log("Máquina já está ligada!");
             return res.status(400).json({ message: "Máquina já está ligada!" });
         }
-        console.log("Ligando a máquina:"+ machine.idNodemcu + " para o usuário:" + user_id);
+        console.log("Ligando a máquina:"+ machine.idNodemcu + " para o usuário:" + id_user);
 
         // Chamar a função separada para lidar com a tentativa de ligar o NodeMCU
         const ligarNodeMcuResult = await tentarLigarNodeMcu(machine, res);
@@ -189,7 +189,7 @@ const ligarMaquinaIndustrial = async (req, res) => {
                 };
                 const createTransactions = await TransactionModel.createTransaction(transaction);
                 if(createTransactions){
-                    console.log("Criado o registro para a máquina:"+ machine.idNodemcu + " para o usuário:" + user_id);
+                    console.log("Criado o registro para a máquina:"+ machine.idNodemcu + " para o usuário:" + id_user);
 
                     res.status(200).json({ message: "Máquina ligada com sucesso!" });
                 } else {
