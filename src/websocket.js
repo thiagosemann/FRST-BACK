@@ -29,12 +29,10 @@ function createWebSocketServer(server) {
         });
         // Armazene o ID do NodeMCU juntamente com a conexão, se necessário
         connections.push({ ws, nodeId: nodeId, connected: true });
-     //   logConnectionStatus(nodeId, true); // Registrar conexão bem-sucedida
       } else if(messageString.startsWith('NID:')){
         const nodeId = messageString.slice(4);
         // Armazene o ID do NodeMCU juntamente com a conexão, se necessário
         connections.push({ ws, nodeId: nodeId, connected: true });
-    //    logConnectionStatus(nodeId, true); // Registrar conexão bem-sucedida
       }else {
         const parts = messageString.split(':');
         // Enviar resposta para o cliente WebSocket como texto
@@ -55,9 +53,7 @@ function createWebSocketServer(server) {
       const index = connections.findIndex((conn) => conn.ws === ws);
       if (index !== -1) {
         const connection = connections[index];
-     //   if (connection.nodeId) {
-      //    logConnectionStatus(connection.nodeId, false); // Registrar desconexão
-      //  }
+
         connections.splice(index, 1);
       }
     });
@@ -73,17 +69,7 @@ function createWebSocketServer(server) {
   }, 10000);
 }
 
-async function logConnectionStatus(nodeId, connected) {
-  const status = connected ? 'conectado' : 'desconectado';
-  const machines = await machinesModel.getMachinesByIdNodeMcu(nodeId);
-  const data_hora = new Date();
-  const nodemcuID = nodeId;
-  const id_maquina = machines[0].id;
 
-  const query = 'INSERT INTO Controle_Conexao (data_hora, nodemcuID, status, id_maquina) VALUES (?, ?, ?, ?)';
-  const [result] = await connection.execute(query, [data_hora, nodemcuID, status, id_maquina]);
-  return { insertId: result.insertId };
-}
 
 async function updateMachineStatus(nodeId) {
   try {

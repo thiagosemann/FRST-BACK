@@ -10,6 +10,8 @@ const nodemcuController = require('./controllers/nodemcuController');
 const controleConexao = require('./controllers/controleConexaoController');
 const gerenciadorMaquina = require('./GerenciadorMaquina/gerenciadorMaquina');
 
+const apiInter = require('./Certificados/apiInter');
+
 const validateMachine = require('./middlewares/machinesMiddleware');
 const validateBuilding = require('./middlewares/buildingsMiddleware');
 const validateTransaction = require('./middlewares/transactionMiddleware');
@@ -81,6 +83,7 @@ router.get('/disconnections/machine/:id', verifyToken, controleConexao.getDiscon
 // Rotas para o gerenciador de Maquina
 router.post('/gerenciadorMaquina/ligar', verifyToken, gerenciadorMaquina.ligarMaquina);
 router.post('/gerenciadorMaquina/desligar', verifyToken, gerenciadorMaquina.desligarMaquina);
+router.post('/gerenciadorMaquina/ligarIndustrial', verifyToken, gerenciadorMaquina.ligarMaquinaIndustrial);
 
 
 module.exports = router;

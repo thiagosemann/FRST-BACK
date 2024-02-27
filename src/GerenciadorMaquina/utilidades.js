@@ -11,7 +11,11 @@ const createUsageHistory = async (usage) => {
       const start_time = new Date();
       const query = 'INSERT INTO UsageHistory (user_id, machine_id, start_time) VALUES (?, ?, ?)';
       const [result] = await connection.execute(query, [user_id, machine_id, start_time]);
-      return { insertId: result.insertId };
+      const usage = {
+        id:result.insertId ,
+        start_time: start_time
+      }
+      return usage;
     } catch (err) {
       console.error('Error creating usage history:', err);
       throw new Error('Failed to create usage history');
@@ -76,10 +80,10 @@ const ligarNodeMcu = (nodeId) => {
 };
 //-------------------------------------------------------------------------Desligar Maquina-------------------------------------------------------------------------//
 
-const encerrarUsageHistory = async (lastUsage, building) => {
+const encerrarUsageHistory = async (lastUsage, machine) => {
     try {
         const end_time = new Date();
-        const total_cost = calculateCost(building.hourly_rate,lastUsage.start_time,end_time);
+        const total_cost = calculateCost(machine.hourly_rate,lastUsage.start_time,end_time);
         const {id} = lastUsage
         // Atualizar a tabela UsageHistory
         const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
@@ -92,6 +96,8 @@ const encerrarUsageHistory = async (lastUsage, building) => {
       throw new Error('Failed to update partial usage history');
     }
   };
+
+
 
 const removerEncerramentoUsageHistory = async (lastUsage) => {
     try {
@@ -215,4 +221,5 @@ module.exports = {
     encerrarUsageHistory,
     desligarNodemcu,
     removerEncerramentoUsageHistory
+    
 };
