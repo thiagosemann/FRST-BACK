@@ -5,22 +5,21 @@ const { wss, connections } = require('../websocket');
 
 //-------------------------------------------------------------------------Ligar Maquina-------------------------------------------------------------------------//
 const createUsageHistory = async (usage) => {
-    console.log(new Date())
     try {
       const { user_id, machine_id } = usage;
       const start_time = new Date();
       const query = 'INSERT INTO UsageHistory (user_id, machine_id, start_time) VALUES (?, ?, ?)';
       const [result] = await connection.execute(query, [user_id, machine_id, start_time]);
-      const usage = {
-        id:result.insertId ,
+      const historyEntry = {
+        id: result.insertId,
         start_time: start_time
       }
-      return usage;
+      return historyEntry;
     } catch (err) {
       console.error('Error creating usage history:', err);
       throw new Error('Failed to create usage history');
     }
-  };
+};
 
 
 
