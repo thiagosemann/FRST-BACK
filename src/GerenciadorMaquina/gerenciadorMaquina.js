@@ -212,12 +212,20 @@ const ligarMaquinaIndustrial = async (req, res) => {
                         // Atualizar o status da máquina no banco de dados
                         const machineStatus = await Utilidades.updateMachineStatus(machine.id,true);
                         console.log("Machine status updated:", machineStatus);
+                        // Criar uma função onde o  machineStatus vai ser alterado daqui tantos minutos
+                        if (machine.type === "Industrial-Lava") {
+                            // Schedule the machine status to be set to false after 32 minutes
+                            scheduleMachineStatusUpdate(machine.id, 32);
+                        } else {
+                            // Schedule the machine status to be set to false after 35 minutes
+                            scheduleMachineStatusUpdate(machine.id, 35);
+                        }
                         if (machineStatus) {
                            // Criar registro de histórico de uso
                             const usage = await Utilidades.createUsageHistory({ user_id: id_user, machine_id: id_maquina });
                             console.log("Criado usageHistory:", usage);
                             if (usage) {
-                                const usageHistoryEncerrada = await Utilidades.encerrarUsageHistory(usage,machine );
+                                const usageHistoryEncerrada = await Utilidades.encerrarUsageHistoryIndustrial(usage,machine );
                                 console.log("Encerrado usageHistory:", usageHistoryEncerrada);
                                 const transaction = {
                                     user_id: id_user,
@@ -270,6 +278,18 @@ const ligarMaquinaIndustrial = async (req, res) => {
         console.error(`Erro no processamento: ${err.message}`);
         res.status(500).json({ message: "Erro no processamento: " + err.message });
     }
+};
+
+// Função para agendar a atualização do status da máquina
+const scheduleMachineStatusUpdate = (machineId, minutes) => {
+    setTimeout(() => {
+        try {
+            const machineStatus = Utilidades.updateMachineStatus(machineId, false);
+            console.log("Machine status will be updated to false in", minutes, "minutes.");
+        } catch (error) {
+            console.error("Error scheduling machine status update:", error.message);
+        }
+    }, minutes * 60 * 1000); // Convert minutes to milliseconds
 };
 
 module.exports = {

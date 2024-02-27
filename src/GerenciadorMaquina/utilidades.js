@@ -96,6 +96,32 @@ const encerrarUsageHistory = async (lastUsage, machine) => {
     }
   };
 
+  const encerrarUsageHistoryIndustrial = async (lastUsage, machine) => {
+    try {
+        let end_time = new Date(lastUsage.start_time); // Initialize end_time with start_time
+
+        if (machine.type === "Industrial-Lava") {
+            end_time.setMinutes(end_time.getMinutes() + 32); // Add 32 minutes
+        } else {
+            end_time.setMinutes(end_time.getMinutes() + 35); // Add 35 minutes
+        }
+        
+        const total_cost = calculateCost(machine.hourly_rate, lastUsage.start_time, end_time);
+        const { id } = lastUsage;
+
+        // Update the UsageHistory table
+        const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ? WHERE id = ?';
+        const [result] = await connection.execute(usageHistoryQuery, [end_time, total_cost, id]);
+
+        lastUsage.end_time = end_time;
+        lastUsage.total_cost = total_cost;
+        return { lastUsage };
+    } catch (err) {
+        console.error('Error updating partial usage history:', err);
+        throw new Error('Failed to update partial usage history');
+    }
+};
+
 
 
 const removerEncerramentoUsageHistory = async (lastUsage) => {
@@ -218,6 +244,7 @@ module.exports = {
     ligarNodeMcu,
     updateMachineStatus,
     encerrarUsageHistory,
+    encerrarUsageHistoryIndustrial,
     desligarNodemcu,
     removerEncerramentoUsageHistory
     
