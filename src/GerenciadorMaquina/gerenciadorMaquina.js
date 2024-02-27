@@ -224,7 +224,7 @@ const ligarMaquinaIndustrial = async (req, res) => {
                                 const usageHistoryEncerrada = await Utilidades.encerrarUsageHistory(usage,machine );
                                 console.log("Encerrado usageHistory:", usageHistoryEncerrada);
                                 const transaction = {
-                                    user_id: usageHistoryEncerrada.lastUsage.user_id,
+                                    user_id: id_user,
                                     usage_history_id: usageHistoryEncerrada.lastUsage.id || 0,
                                     transaction_time: usageHistoryEncerrada.lastUsage.end_time,
                                     amount: usageHistoryEncerrada.lastUsage.total_cost || 0
