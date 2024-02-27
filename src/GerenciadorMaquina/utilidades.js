@@ -28,7 +28,6 @@ const ligarNodeMcu = (nodeId) => {
         try {
             const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
             if (targetConnection) {
-                console.log(`Enviando comando para ligar NodeMCU ${nodeId}`);
                 const binaryMessage = Buffer.from([0x01]);
                 targetConnection.ws.send(binaryMessage);
 
@@ -47,11 +46,9 @@ const ligarNodeMcu = (nodeId) => {
 
                 targetConnection.ws.once('message', (message) => {
                     const messageString = message.toString();
-                    console.log(`Recebido mensagem do NodeMCU ${nodeId}: ${messageString}`);
                     if (messageString === 'RelayStatus:ON') {
                         confirmationReceived = true;
                         clearTimeout(confirmationTimeout); // Cancelar o timeout
-                        console.log(`Confirmação recebida: NodeMCU ${nodeId} ligado com sucesso`);
                         resolve({
                             success: true,
                             message: 'NodeMCU ligado com sucesso',
@@ -152,7 +149,6 @@ const desligarNodemcu = (nodeId) => {
         try {
             const targetConnection = connections.find((connection) => connection.nodeId === nodeId);
             if (targetConnection) {
-                console.log(`Enviando comando para desligar NodeMCU ${nodeId}`);
                 const binaryMessage = Buffer.from([0x02]);
                 targetConnection.ws.send(binaryMessage);
 
@@ -172,13 +168,10 @@ const desligarNodemcu = (nodeId) => {
 
                 targetConnection.ws.once('message', (message) => {
                     const messageString = message.toString();
-                    console.log(`Recebido mensagem do NodeMCU ${nodeId}: ${messageString}`);
                     if (messageString === 'RelayStatus:OFF') {
                         confirmationReceived = true;
                         clearTimeout(confirmationTimeout); // Cancelar o timeout
 
-                        // Agora que a confirmação foi recebida, você pode resolver a Promessa
-                        console.log(`Confirmação recebida: NodeMCU ${nodeId} desligado com sucesso`);
                         resolve({
                             success: true,
                             message: 'NodeMCU desligado com sucesso',
