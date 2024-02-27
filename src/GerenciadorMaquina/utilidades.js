@@ -101,9 +101,9 @@ const encerrarUsageHistory = async (lastUsage, machine) => {
         let end_time = new Date(lastUsage.start_time); // Initialize end_time with start_time
 
         if (machine.type === "Industrial-Lava") {
-            end_time.setMinutes(end_time.getMinutes() + 32); // Add 32 minutes
+            end_time.setMinutes(end_time.getMinutes() + 2); // Add 32 minutes
         } else {
-            end_time.setMinutes(end_time.getMinutes() + 35); // Add 35 minutes
+            end_time.setMinutes(end_time.getMinutes() + 2); // Add 35 minutes
         }
         
         const total_cost = calculateCost(machine.hourly_rate, lastUsage.start_time, end_time);

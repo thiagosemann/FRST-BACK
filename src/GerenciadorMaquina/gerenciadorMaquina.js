@@ -215,10 +215,10 @@ const ligarMaquinaIndustrial = async (req, res) => {
                         // Criar uma função onde o  machineStatus vai ser alterado daqui tantos minutos
                         if (machine.type === "Industrial-Lava") {
                             // Schedule the machine status to be set to false after 32 minutes
-                            scheduleMachineStatusUpdate(machine.id, 32);
+                            scheduleMachineStatusUpdate(machine.id, 2);
                         } else {
                             // Schedule the machine status to be set to false after 35 minutes
-                            scheduleMachineStatusUpdate(machine.id, 35);
+                            scheduleMachineStatusUpdate(machine.id, 2);
                         }
                         if (machineStatus) {
                            // Criar registro de histórico de uso
