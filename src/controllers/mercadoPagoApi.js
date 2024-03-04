@@ -35,7 +35,7 @@ async function criarPreferencia(req, res) {
   }
 }
 
-async function processarWebhookMercadoPago(payload) {
+async function processarWebhookMercadoPago(payload, res) {
   try {
     // Verifica se o payload do webhook está presente
     if (!payload) {
@@ -44,12 +44,15 @@ async function processarWebhookMercadoPago(payload) {
 
     console.log("payload.body",payload.body)
 
-    res.status(200).json();
+    // Processamento do webhook aqui...
 
+    // Envie uma resposta de sucesso de volta para o Mercado Pago
+    res.status(200).send('Webhook processado com sucesso.');
 
   } catch (error) {
     console.error('Erro ao processar webhook do MercadoPago:', error);
-    throw error;
+    // Envie uma resposta de erro de volta para o Mercado Pago
+    res.status(500).send('Erro ao processar webhook do MercadoPago.');
   }
 }
 
