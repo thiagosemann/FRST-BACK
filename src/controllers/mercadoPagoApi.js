@@ -40,7 +40,8 @@ async function criarPreferencia(req, res) {
 async function processarWebhookMercadoPago(req, res) {
   try {
     // Verifica se o payload do webhook está presente
-    console.log("payload.body",req.body);
+    console.log("payload",req);
+    
     const { data, type } = req.body;
     const { id } = data;
 
@@ -52,6 +53,10 @@ async function processarWebhookMercadoPago(req, res) {
     if (response.status === 200) {
       const paymentInfo = response.data;
       console.log(paymentInfo);
+
+      // Atualiza o status do pagamento no banco de dados
+      const status = paymentInfo.status;
+      await PreferenceModel.atualizarPreferencia(id, status); // Supondo que haja uma função para atualizar o status no banco de dados
 
       // Envie uma resposta de sucesso de volta para o Mercado Pago
       res.status(200).send('Webhook processado com sucesso.');
