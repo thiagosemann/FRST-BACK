@@ -35,37 +35,19 @@ async function criarPreferencia(req, res) {
   }
 }
 
-
-async function verificarStatusPreferencia() {
+async function processarWebhookMercadoPago(payload) {
   try {
-    // Obtém todas as preferências pendentes do banco de dados
-    const preferenciasPendentes = await PreferenceModel.getPreferenciasPendentes();
-    // Array para armazenar o status de cada preferência
-    const statusPreferencias = [];
-
-    // Itera sobre as preferências pendentes
-    for (const preferencia of preferenciasPendentes) {
-      const preferenceId = preferencia.referencia_externa;
-      console.log(preferenceId);
-      // Obtém o status da preferência na API do MercadoPago
-      const payment = new Payment(client); // Crie uma instância de Payment
-      const paymentInfo = await payment.get(preferenceId); // Use o ID da preferência como ID do pagamento
-
-      // Adiciona o status da preferência ao array
-      statusPreferencias.push({
-        preferenceId: preferenceId,
-        status: paymentInfo.status
-      });
+    // Verifica se o payload do webhook está presente
+    if (!payload) {
+      throw new Error('Payload do webhook não encontrado.');
     }
-
-    // Retorna o array com o status de cada preferência
-    return statusPreferencias;
+    console.log(payload)
   } catch (error) {
-    console.error('Erro ao verificar status das preferências:', error);
+    console.error('Erro ao processar webhook do MercadoPago:', error);
     throw error;
   }
 }
 
 
 
-module.exports = { criarPreferencia };
+module.exports = { criarPreferencia,processarWebhookMercadoPago };
