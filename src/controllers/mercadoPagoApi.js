@@ -40,7 +40,7 @@ async function criarPreferencia(req, res) {
 async function processarWebhookMercadoPago(req, res) {
   try {
     // Verifica se o payload do webhook está presente
-    console.log("payload",req);
+    console.log("payload.body",req.body);
     
     const { data, type } = req.body;
     const { id } = data;
