@@ -45,7 +45,7 @@ async function processarWebhookMercadoPago(req, res) {
     const { id } = data;
 
     // Faz a consulta à API do MercadoPago para obter informações sobre o pagamento
-    const url = `https://api.mercadopago.com/v1/payments/${id}?access_token=${accessToken}`;
+    const url = `https://api.mercadopago.com/v1/payments/${id}?access_token=${access_token}`;
     const response = await axios.get(url);
 
     // Verifica se a consulta foi bem-sucedida
