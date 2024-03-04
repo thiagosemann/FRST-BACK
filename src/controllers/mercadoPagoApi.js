@@ -1,10 +1,11 @@
 const { MercadoPagoConfig, Preference, Payment } = require('mercadopago');
 const PreferenceModel = require('../models/preferenceModel');
+const axios = require('axios');
 
+const access_token ="TEST-2792798944696480-022909-a9d60f710950cc2410e2814e6b932a02-1703867985";
 // Configuração do MercadoPago
-const client = new MercadoPagoConfig({ accessToken: 'TEST-2792798944696480-022909-a9d60f710950cc2410e2814e6b932a02-1703867985' });
+const client = new MercadoPagoConfig({ accessToken: access_token });
 const preference = new Preference(client);
-const payment = new Payment(client);
 
 // Função para criar a preferência e obter o link de redirecionamento
 async function criarPreferencia(req, res) {
@@ -39,16 +40,26 @@ async function criarPreferencia(req, res) {
 async function processarWebhookMercadoPago(req, res) {
   try {
     // Verifica se o payload do webhook está presente
-    console.log("payload.body",req.body)
+    console.log("payload.body",req.body);
     const { data, type } = req.body;
     const { id } = data;
 
-    const paymentInfo = await payment.get(id);
-    console.log(paymentInfo)
-    // Processamento do webhook aqui...
+    // Faz a consulta à API do MercadoPago para obter informações sobre o pagamento
+    const url = `https://api.mercadopago.com/v1/payments/${id}?access_token=${accessToken}`;
+    const response = await axios.get(url);
 
-    // Envie uma resposta de sucesso de volta para o Mercado Pago
-    res.status(200).send('Webhook processado com sucesso.');
+    // Verifica se a consulta foi bem-sucedida
+    if (response.status === 200) {
+      const paymentInfo = response.data;
+      console.log(paymentInfo);
+
+      // Envie uma resposta de sucesso de volta para o Mercado Pago
+      res.status(200).send('Webhook processado com sucesso.');
+    } else {
+      console.error('Erro ao processar webhook do MercadoPago:', response.statusText);
+      // Envie uma resposta de erro de volta para o Mercado Pago
+      res.status(500).send('Erro ao processar webhook do MercadoPago.');
+    }
 
   } catch (error) {
     console.error('Erro ao processar webhook do MercadoPago:', error);
@@ -56,6 +67,7 @@ async function processarWebhookMercadoPago(req, res) {
     res.status(500).send('Erro ao processar webhook do MercadoPago.');
   }
 }
+
 
 
 
