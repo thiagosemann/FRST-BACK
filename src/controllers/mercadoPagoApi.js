@@ -1,4 +1,4 @@
-const { MercadoPagoConfig, Preference } = require('mercadopago');
+const { MercadoPagoConfig, Preference, Payment } = require('mercadopago');
 const PreferenceModel = require('../models/preferenceModel');
 
 // Configuração do MercadoPago
@@ -35,35 +35,37 @@ async function criarPreferencia(req, res) {
   }
 }
 
-// Função para processar as informações do webhook do MercadoPago
-async function processarWebhookMercadoPago(payload) {
+
+async function verificarStatusPreferencia() {
   try {
-    // Verifica se o payload do webhook está presente
-    if (!payload) {
-      throw new Error('Payload do webhook não encontrado.');
+    // Obtém todas as preferências pendentes do banco de dados
+    const preferenciasPendentes = await PreferenceModel.getPreferenciasPendentes();
+    // Array para armazenar o status de cada preferência
+    const statusPreferencias = [];
+
+    // Itera sobre as preferências pendentes
+    for (const preferencia of preferenciasPendentes) {
+      const preferenceId = preferencia.referencia_externa;
+      console.log(preferenceId);
+      // Obtém o status da preferência na API do MercadoPago
+      const payment = new Payment(client); // Crie uma instância de Payment
+      const paymentInfo = await payment.get(preferenceId); // Use o ID da preferência como ID do pagamento
+
+      // Adiciona o status da preferência ao array
+      statusPreferencias.push({
+        preferenceId: preferenceId,
+        status: paymentInfo.status
+      });
     }
 
-    // Verifica se o evento é de pagamento
-    if (payload.hasOwnProperty('type') && payload.type === 'payment') {
-      // Verifica o status do pagamento
-      const status = payload.data.status;
-      const preferenceId = payload.data.preference_id;
-
-      // Atualiza o status da preferência no banco de dados
-      await PreferenceModel.atualizarStatusPreferencia(preferenceId, status);
-
-      // Retorna uma mensagem de sucesso
-      return 'Status da preferência atualizado com sucesso.';
-    } else {
-      // Se o evento não for de pagamento, lança um erro
-      throw new Error('Evento do webhook não é de pagamento.');
-    }
+    // Retorna o array com o status de cada preferência
+    return statusPreferencias;
   } catch (error) {
-    console.error('Erro ao processar webhook do MercadoPago:', error);
+    console.error('Erro ao verificar status das preferências:', error);
     throw error;
   }
 }
 
 
 
-module.exports = { criarPreferencia,processarWebhookMercadoPago  };
+module.exports = { criarPreferencia };
