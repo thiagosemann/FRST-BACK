@@ -20,8 +20,16 @@ const excluirPreferencia = async (preferenciaId) => {
   return result;
 };
 
+const getPreferenciasPendentes = async () => {
+  const status = 'pendente';
+  const query = 'SELECT * FROM preferencia_mercado_pago WHERE status = ?';
+  const [preferencias] = await connection.execute(query, [status]);
+  return preferencias;
+};
+
 module.exports = {
   criarPreferencia,
   atualizarPreferencia,
-  excluirPreferencia
+  excluirPreferencia,
+  getPreferenciasPendentes
 };

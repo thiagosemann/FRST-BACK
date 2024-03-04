@@ -87,6 +87,7 @@ router.post('/gerenciadorMaquina/ligarIndustrial', verifyToken, gerenciadorMaqui
 
 // Rota do MercadoPago
 router.post('/mercadoPago/criar-preferencia', mercadoPagoApi.criarPreferencia);
+router.post('/mercadoPago/processar-webhook', mercadoPagoApi.processarWebhookMercadoPago);
 
 
 module.exports = router;
