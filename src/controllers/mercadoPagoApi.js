@@ -38,11 +38,11 @@ async function criarPreferencia(req, res) {
 async function processarWebhookMercadoPago(payload) {
   try {
     // Verifica se o payload do webhook está presente
-    console.log("payload",payload)
     if (!payload) {
       throw new Error('Payload do webhook não encontrado.');
     }
-  
+    console.log("payload",payload)
+
   } catch (error) {
     console.error('Erro ao processar webhook do MercadoPago:', error);
     throw error;
