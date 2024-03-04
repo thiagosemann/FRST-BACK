@@ -10,7 +10,7 @@ const nodemcuController = require('./controllers/nodemcuController');
 const controleConexao = require('./controllers/controleConexaoController');
 const gerenciadorMaquina = require('./GerenciadorMaquina/gerenciadorMaquina');
 
-const apiInter = require('./Certificados/apiInter');
+const mercadoPagoApi = require('./controllers/mercadoPagoApi');
 
 const validateMachine = require('./middlewares/machinesMiddleware');
 const validateBuilding = require('./middlewares/buildingsMiddleware');
@@ -84,6 +84,9 @@ router.get('/disconnections/machine/:id', verifyToken, controleConexao.getDiscon
 router.post('/gerenciadorMaquina/ligar', verifyToken, gerenciadorMaquina.ligarMaquina);
 router.post('/gerenciadorMaquina/desligar', verifyToken, gerenciadorMaquina.desligarMaquina);
 router.post('/gerenciadorMaquina/ligarIndustrial', verifyToken, gerenciadorMaquina.ligarMaquinaIndustrial);
+
+// Rota do MercadoPago
+router.post('/mercadoPago/criar-preferencia', mercadoPagoApi.criarPreferencia);
 
 
 module.exports = router;
