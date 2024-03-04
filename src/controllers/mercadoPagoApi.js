@@ -4,6 +4,7 @@ const PreferenceModel = require('../models/preferenceModel');
 // Configuração do MercadoPago
 const client = new MercadoPagoConfig({ accessToken: 'TEST-2792798944696480-022909-a9d60f710950cc2410e2814e6b932a02-1703867985' });
 const preference = new Preference(client);
+const payment = new Payment(client);
 
 // Função para criar a preferência e obter o link de redirecionamento
 async function criarPreferencia(req, res) {
@@ -35,15 +36,19 @@ async function criarPreferencia(req, res) {
   }
 }
 
-async function processarWebhookMercadoPago(payload, res) {
+async function processarWebhookMercadoPago(req, res) {
   try {
     // Verifica se o payload do webhook está presente
     if (!payload) {
       throw new Error('Payload do webhook não encontrado.');
     }
 
-    console.log("payload.body",payload.body)
+    console.log("payload.body",req.body)
+    const { data, type } = req.body;
+    const { id } = data;
 
+    const paymentInfo = await payment.get(id);
+    console.log(paymentInfo)
     // Processamento do webhook aqui...
 
     // Envie uma resposta de sucesso de volta para o Mercado Pago
