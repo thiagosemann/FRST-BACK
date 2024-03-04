@@ -41,7 +41,11 @@ async function processarWebhookMercadoPago(payload) {
     if (!payload) {
       throw new Error('Payload do webhook não encontrado.');
     }
-    console.log("payload",payload)
+    const { data, type } = payload;
+
+    console.log("data",data)
+    console.log("type",type)
+    
 
   } catch (error) {
     console.error('Erro ao processar webhook do MercadoPago:', error);
