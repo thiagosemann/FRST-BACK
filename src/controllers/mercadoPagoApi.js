@@ -1,5 +1,5 @@
 const { MercadoPagoConfig, Preference, Payment } = require('mercadopago');
-const PreferenceModel = require('../models/preferenceModel');
+const PaymentModel = require('../models/paymentModel');
 const axios = require('axios');
 
 const access_token ="TEST-2792798944696480-022909-a9d60f710950cc2410e2814e6b932a02-1703867985";
@@ -11,26 +11,9 @@ const preference = new Preference(client);
 async function criarPreferencia(req, res) {
   try {
     const body = req.body;
-
     // Cria a preferência no MercadoPago
     const preferenceResponse = await preference.create({ body });
-    const preferenceId = preferenceResponse.id;
-
-    // Cria a preferência no banco de dados
-    const preferenciaBanco = {
-      user_id: body.user_id,
-      valor_total: body.total_amount, // ou outro campo que represente o valor total
-      informacoes_adicionais: body.additional_info,
-      referencia_externa: preferenceId,
-      client_id:preferenceResponse.client_id,
-      collector_id:preferenceResponse.collector_id
-
-    };
-    console.log(preferenciaBanco)
-    await PreferenceModel.criarPreferencia(preferenciaBanco);
-
     const redirectUrl = preferenceResponse.sandbox_init_point;
-    
     res.json({ redirectUrl });
   } catch (error) {
     console.error('Erro ao criar preferência:', error);
@@ -54,13 +37,16 @@ async function processarWebhookMercadoPago(req, res) {
     if (response.status === 200) {
       const paymentInfo = response.data;
       console.log(paymentInfo);
-
-      // Atualiza o status do pagamento no banco de dados
-   //   const status = paymentInfo.status;
-    //  await PreferenceModel.atualizarPreferencia(id, status); // Supondo que haja uma função para atualizar o status no banco de dados
-
-      // Envie uma resposta de sucesso de volta para o Mercado Pago
-      res.status(200).send('Webhook processado com sucesso.');
+      if(paymentInfo.status == "approved"){
+        const payment = {
+          user_id: paymentInfo.metadata.user_id,
+          valor_total: paymentInfo.transaction_amount, // ou outro campo que represente o valor total
+          tipo_pagamento: paymentInfo.payment_type_id,
+          email_comprador: paymentInfo.payer.email,
+        };     
+        await PaymentModel.criarPagamento(payment);
+        res.status(200).send('Webhook processado com sucesso.');
+      }
     } else {
       console.error('Erro ao processar webhook do MercadoPago:', response.statusText);
       // Envie uma resposta de erro de volta para o Mercado Pago
