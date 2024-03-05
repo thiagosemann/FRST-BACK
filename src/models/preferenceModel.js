@@ -1,10 +1,10 @@
 const connection = require('./connection');
 
 const criarPreferencia = async (preferencia) => {
-  const { user_id, valor_total, informacoes_adicionais, referencia_externa } = preferencia;
+  const { user_id, valor_total, informacoes_adicionais, referencia_externa,client_id,collector_id } = preferencia;
   const status = 'pendente'; // Defina o status inicial como pendente
-  const query = 'INSERT INTO preferencia_mercado_pago (user_id, valor_total, informacoes_adicionais, status, referencia_externa) VALUES (?, ?, ?, ?, ?)';
-  const [result] = await connection.execute(query, [user_id, valor_total, informacoes_adicionais, status, referencia_externa]);
+  const query = 'INSERT INTO preferencia_mercado_pago (user_id, valor_total, informacoes_adicionais, status, referencia_externa,client_id,collector_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
+  const [result] = await connection.execute(query, [user_id, valor_total, informacoes_adicionais, status, referencia_externa,client_id,collector_id]);
   return { insertId: result.insertId };
 };
 

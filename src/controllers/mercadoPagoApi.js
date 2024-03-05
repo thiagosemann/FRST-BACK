@@ -26,7 +26,7 @@ async function criarPreferencia(req, res) {
       collector_id:preferenceResponse.collector_id
 
     };
-
+    console.log(preferenciaBanco)
     await PreferenceModel.criarPreferencia(preferenciaBanco);
 
     const redirectUrl = preferenceResponse.sandbox_init_point;
