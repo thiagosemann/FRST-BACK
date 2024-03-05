@@ -21,12 +21,13 @@ async function criarPreferencia(req, res) {
       user_id: body.user_id,
       valor_total: body.total_amount, // ou outro campo que represente o valor total
       informacoes_adicionais: body.additional_info,
-      referencia_externa: preferenceId
-      // Adicione outros campos, se necessário
+      referencia_externa: preferenceId,
+      client_id:preferenceResponse.client_id,
+      collector_id:preferenceResponse.collector_id
+
     };
 
     await PreferenceModel.criarPreferencia(preferenciaBanco);
-    console.log(preferenceResponse)
 
     const redirectUrl = preferenceResponse.sandbox_init_point;
     
@@ -55,8 +56,8 @@ async function processarWebhookMercadoPago(req, res) {
       console.log(paymentInfo);
 
       // Atualiza o status do pagamento no banco de dados
-      const status = paymentInfo.status;
-      await PreferenceModel.atualizarPreferencia(id, status); // Supondo que haja uma função para atualizar o status no banco de dados
+   //   const status = paymentInfo.status;
+    //  await PreferenceModel.atualizarPreferencia(id, status); // Supondo que haja uma função para atualizar o status no banco de dados
 
       // Envie uma resposta de sucesso de volta para o Mercado Pago
       res.status(200).send('Webhook processado com sucesso.');
