@@ -137,6 +137,33 @@ const deleteUser = async (id) => {
   }
 };
 
+const updateUserCredit = async (id, creditToAdd) => {
+  // Verificar se o usuário existe
+  const getUserQuery = 'SELECT * FROM users WHERE id = ?';
+  const [existingUsers] = await connection.execute(getUserQuery, [id]);
+
+  if (existingUsers.length === 0) {
+    throw new Error('Usuário não encontrado.');
+  }
+
+  // Obter o crédito atual do usuário
+  const currentCredit = existingUsers[0].credito;
+
+  // Calcular o novo crédito
+  const newCredit = currentCredit + creditToAdd;
+
+  // Atualizar o crédito do usuário no banco de dados
+  const updateUserCreditQuery = 'UPDATE users SET credito = ? WHERE id = ?';
+
+  try {
+    await connection.execute(updateUserCreditQuery, [newCredit, id]);
+    return { message: 'Crédito do usuário atualizado com sucesso.' };
+  } catch (error) {
+    console.error('Erro ao atualizar crédito do usuário:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getAllUsers,
   createUser,
@@ -144,5 +171,6 @@ module.exports = {
   getUser,
   updateUser,
   getUsersByBuilding,
-  deleteUser
+  deleteUser,
+  updateUserCredit
 };

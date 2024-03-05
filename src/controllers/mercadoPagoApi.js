@@ -1,5 +1,7 @@
 const { MercadoPagoConfig, Preference, Payment } = require('mercadopago');
 const PaymentModel = require('../models/paymentModel');
+const UsersModel = require('../models/usersModel');
+
 const axios = require('axios');
 
 const access_token ="TEST-2792798944696480-022909-a9d60f710950cc2410e2814e6b932a02-1703867985";
@@ -45,6 +47,9 @@ async function processarWebhookMercadoPago(req, res) {
           email_comprador: paymentInfo.payer.email,
         };     
         await PaymentModel.criarPagamento(payment);
+        await UsersModel.updateUserCredit(payment.user_id, payment.valor_total);
+
+        //Adicionar o paymentInfo.transaction_amount como credito ao usuario
         res.status(200).send('Webhook processado com sucesso.');
       }
     } else {
