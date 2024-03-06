@@ -141,20 +141,16 @@ const updateUserCredit = async (id, creditToAdd) => {
   // Verificar se o usuário existe
   const getUserQuery = 'SELECT * FROM users WHERE id = ?';
   const [existingUsers] = await connection.execute(getUserQuery, [id]);
-  console.log("id",id)
-  console.log("creditToAdd",creditToAdd)
-  
+
   if (existingUsers.length === 0) {
     throw new Error('Usuário não encontrado.');
   }
 
   // Obter o crédito atual do usuário
   const currentCredit = existingUsers[0].credito;
-  console.log("currentCredit",currentCredit)
   
   // Calcular o novo crédito
   const newCredit = parseFloat(currentCredit) + parseFloat(creditToAdd);
-  console.log("newCredit",newCredit)
   
   // Atualizar o crédito do usuário no banco de dados
   const updateUserCreditQuery = 'UPDATE users SET credito = ? WHERE id = ?';

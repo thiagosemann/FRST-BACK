@@ -37,17 +37,16 @@ async function processarWebhookMercadoPago(req, res) {
     // Verifica se a consulta foi bem-sucedida
     if (response.status === 200) {
       const paymentInfo = response.data;
-      console.log(paymentInfo);
       if(paymentInfo.status == "approved"){
         const payment = {
           user_id: paymentInfo.metadata.user_id,
-          valor_total: paymentInfo.transaction_amount, // ou outro campo que represente o valor total
+          valor_total: paymentInfo.transaction_amount, 
           tipo_pagamento: paymentInfo.payment_type_id,
           email_comprador: paymentInfo.payer.email,
         };     
         await PaymentModel.criarPagamento(payment);
         await UsersModel.updateUserCredit(payment.user_id, payment.valor_total);
-
+        console.log("Pagamento efetuado:",payment);
         //Adicionar o paymentInfo.transaction_amount como credito ao usuario
         res.status(200).send('Webhook processado com sucesso.');
       }
