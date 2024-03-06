@@ -26,9 +26,8 @@ async function criarPreferencia(req, res) {
 async function processarWebhookMercadoPago(req, res) {
   try {
     // Verifica se o payload do webhook está presente
-    console.log("payload.body",req.body);
-    
-    const { data, type } = req.body;
+
+    const { data } = req.body;
     const { id } = data;
 
     // Faz a consulta à API do MercadoPago para obter informações sobre o pagamento
