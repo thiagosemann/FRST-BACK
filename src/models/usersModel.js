@@ -153,7 +153,7 @@ const updateUserCredit = async (id, creditToAdd) => {
   console.log("currentCredit",currentCredit)
   
   // Calcular o novo crédito
-  const newCredit = currentCredit + creditToAdd;
+  const newCredit = parseFloat(currentCredit) + parseFloat(creditToAdd);
   console.log("newCredit",newCredit)
   
   // Atualizar o crédito do usuário no banco de dados
