@@ -15,7 +15,8 @@ async function criarPreferencia(req, res) {
     const body = req.body;
     // Cria a preferência no MercadoPago
     const preferenceResponse = await preference.create({ body });
-    const redirectUrl = preferenceResponse.sandbox_init_point;
+    console.log(preferenceResponse)
+    const redirectUrl = preferenceResponse.init_point;
     res.json({ redirectUrl });
   } catch (error) {
     console.error('Erro ao criar preferência:', error);
