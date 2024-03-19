@@ -4,7 +4,7 @@ const UsersModel = require('../models/usersModel');
 
 const axios = require('axios');
 
-const access_token ="TEST-2792798944696480-022909-a9d60f710950cc2410e2814e6b932a02-1703867985";
+const access_token ="TEST-3018284182681256-031908-c0c6e5a8f2b101ad926e1b827ee4fec9-1733586702";
 // Configuração do MercadoPago
 const client = new MercadoPagoConfig({ accessToken: access_token });
 const preference = new Preference(client);
