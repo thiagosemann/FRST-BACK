@@ -1,12 +1,12 @@
 const { MercadoPagoConfig, Preference, Payment } = require('mercadopago');
 const PaymentModel = require('../models/paymentModel');
 const UsersModel = require('../models/usersModel');
+require('dotenv').config();
 
 const axios = require('axios');
 
-const access_token ="TEST-3018284182681256-031908-c0c6e5a8f2b101ad926e1b827ee4fec9-1733586702";
 // Configuração do MercadoPago
-const client = new MercadoPagoConfig({ accessToken: access_token });
+const client = new MercadoPagoConfig({ accessToken: process.env.access_token });
 const preference = new Preference(client);
 
 // Função para criar a preferência e obter o link de redirecionamento
@@ -31,7 +31,7 @@ async function processarWebhookMercadoPago(req, res) {
     const { id } = data;
 
     // Faz a consulta à API do MercadoPago para obter informações sobre o pagamento
-    const url = `https://api.mercadopago.com/v1/payments/${id}?access_token=${access_token}`;
+    const url = `https://api.mercadopago.com/v1/payments/${id}?access_token=${process.env.access_token}`;
     const response = await axios.get(url);
 
     // Verifica se a consulta foi bem-sucedida
