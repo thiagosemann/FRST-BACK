@@ -195,7 +195,7 @@ const ligarMaquinaIndustrial = async (req, res) => {
                 if(createTransactions){
                     console.log("Criado o registro para a máquina:"+ machine.idNodemcu + " para o usuário:" + id_user);
                     if(user.tipo_pagamento=="pre-pago" && user.role!="admin"){
-                        UserModel.updateUserCreditToDescount(user_id, usageHistoryEncerrada.lastUsage.total_cost || 0)
+                        UserModel.updateUserCreditToDescount(id_user, usageHistoryEncerrada.lastUsage.total_cost || 0)
                     }
                     res.status(200).json({ message: "Máquina ligada com sucesso!" });
                 } else {
