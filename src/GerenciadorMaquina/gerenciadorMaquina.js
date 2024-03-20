@@ -144,10 +144,15 @@ const ligarMaquinaIndustrial = async (req, res) => {
     try {
         const { id_maquina, id_user } = req.body;
         console.log("Request body:", req.body);
-
+        const user = UserModel.getUser(id_user)
+    
         // Buscar informações da máquina pelo ID
         const machine = await MachineModel.getMachineById(id_maquina);
 
+        if(parseFloat(machine.tempo_uso)*(parseFloat(machine.hourly_rate)/60) > parseFloat(user.credito) && user.role != "admin"){
+            console.log("Crédito insuficiente");
+            return res.status(400).json({ message: "Crédito insuficiente" });
+        }
         // Verificar se a máquina está conectada
         const targetConnection = connections.find((connection) => connection.nodeId === machine.idNodemcu);
 
@@ -180,7 +185,7 @@ const ligarMaquinaIndustrial = async (req, res) => {
             // Criar registro de histórico de uso
             const usage = await Utilidades.createUsageHistory({ user_id: id_user, machine_id: id_maquina });
             if (usage) {
-                const usageHistoryEncerrada = await Utilidades.encerrarUsageHistoryIndustrial(usage,machine );
+                const usageHistoryEncerrada = await Utilidades.encerrarUsageHistoryIndustrial(usage,machine,user.tipo_pagamento);
                 const transaction = {
                     user_id: id_user,
                     usage_history_id: usageHistoryEncerrada.lastUsage.id || 0,
@@ -190,7 +195,9 @@ const ligarMaquinaIndustrial = async (req, res) => {
                 const createTransactions = await TransactionModel.createTransaction(transaction);
                 if(createTransactions){
                     console.log("Criado o registro para a máquina:"+ machine.idNodemcu + " para o usuário:" + id_user);
-
+                    if(user.tipo_pagamento=="pre-pago" && user.role!="admin"){
+                        UserModel.updateUserCreditToDescount(user_id, usageHistoryEncerrada.lastUsage.total_cost || 0)
+                    }
                     res.status(200).json({ message: "Máquina ligada com sucesso!" });
                 } else {
                     // Falha ao criar o histórico de uso
@@ -219,7 +226,6 @@ const ligarMaquinaIndustrial = async (req, res) => {
 
 //-----------------------------------------------PRE PAGO--------------------------------------------------------------------------//
 //-----------------------------------------------PRE PAGO--------------------------------------------------------------------------//
-
 
 
 // Função para tentar ligar o NodeMCU

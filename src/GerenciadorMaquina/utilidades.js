@@ -94,7 +94,7 @@ const encerrarUsageHistory = async (lastUsage, machine) => {
     }
   };
 
-  const encerrarUsageHistoryIndustrial = async (lastUsage, machine) => {
+  const encerrarUsageHistoryIndustrial = async (lastUsage, machine, type) => {
     try {
         let end_time = new Date(lastUsage.start_time); // Initialize end_time with start_time
         end_time.setMinutes(end_time.getMinutes() + machine.tempo_uso); // Add 32 minutes
@@ -105,7 +105,7 @@ const encerrarUsageHistory = async (lastUsage, machine) => {
 
         // Update the UsageHistory table
         const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ?, type_usage = ? WHERE id = ?';
-        const [result] = await connection.execute(usageHistoryQuery, [end_time, total_cost, "pos-pago", id]);
+        const [result] = await connection.execute(usageHistoryQuery, [end_time, total_cost, type, id]);
 
         lastUsage.end_time = end_time;
         lastUsage.total_cost = total_cost;
@@ -115,6 +115,7 @@ const encerrarUsageHistory = async (lastUsage, machine) => {
         throw new Error('Failed to update partial usage history');
     }
 };
+
 
 
 
