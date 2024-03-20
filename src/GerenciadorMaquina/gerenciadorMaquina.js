@@ -144,8 +144,7 @@ const ligarMaquinaIndustrial = async (req, res) => {
     try {
         const { id_maquina, id_user } = req.body;
         console.log("Request body:", req.body);
-        const user = UserModel.getUser(id_user)
-        console.log(user)
+        const user = await UserModel.getUser(id_user);
         // Buscar informações da máquina pelo ID
         const machine = await MachineModel.getMachineById(id_maquina);
 
