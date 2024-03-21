@@ -7,21 +7,27 @@ const UsageHistory = require('../models/usageHistoryModel');
 
 
 
-//-----------------------------------------------POS PAGO--------------------------------------------------------------------------//
-//-----------------------------------------------POS PAGO--------------------------------------------------------------------------//
+
 
 const ligarMaquina = async (req, res) => {
     try {
         const { id_maquina, id_user } = req.body;
-
         // Buscar informações da máquina pelo ID
         const machine = await MachineModel.getMachineById(id_maquina);
+
+        const user = await UserModel.getUser(id_user);
         
+        if(parseFloat(user.credito) > parseFloat(machine.hourly_rate)*2 && user.role != "admin" && user.tipo_pagamento == "pre-pago"){
+            console.log("Crédito insuficiente");
+            return res.status(400).json({ message: "Mínimo 2 horas de crédito." });
+        }
+
         // Verificar se a máquina está conectada
         const targetConnection = connections.find((connection) => connection.nodeId === machine.idNodemcu);
         if (!targetConnection) {
             return res.status(400).json({ message: "Máquina não está conectada!" });
         }
+       
 
         // Verificar se a máquina já está ligada
         if (machine.is_in_use) {
@@ -45,7 +51,8 @@ const ligarMaquina = async (req, res) => {
             const newUsage = await Utilidades.createUsageHistory({ user_id: id_user, machine_id: id_maquina });
             if (newUsage) {
                 console.log("Máquina ligada:"+ machine.idNodemcu + " para o usuário:" + id_user)
-                res.status(200).json({ message: "Máquina ligada com sucesso!" });
+                
+                  res.status(200).json({ message: "Máquina ligada com sucesso!" });
             } else {
                 // Falha ao criar o histórico de uso
                 console.log("Falha ao criar o histórico de uso.");
@@ -98,7 +105,7 @@ const desligarMaquina = async (req, res) => {
         if (!desligarNodeMcuResult.success) {
             return;
         }
-        const usageHistoryEncerrada = await Utilidades.encerrarUsageHistory( lastUsage,machine );
+        const usageHistoryEncerrada = await Utilidades.encerrarUsageHistory( lastUsage,machine,user.tipo_pagamento );
 
         if (usageHistoryEncerrada) {
             const transaction = {
@@ -284,8 +291,6 @@ const tentarDesligarNodeMcu = async (machine, res) => {
   
 
 };
-
-
 
 
 // Função para agendar a atualização do status da máquina

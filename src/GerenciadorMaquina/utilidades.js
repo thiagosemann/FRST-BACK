@@ -76,14 +76,14 @@ const ligarNodeMcu = (nodeId) => {
 };
 //-------------------------------------------------------------------------Desligar Maquina-------------------------------------------------------------------------//
 
-const encerrarUsageHistory = async (lastUsage, machine) => {
+const encerrarUsageHistory = async (lastUsage, machine,type) => {
     try {
         const end_time = new Date();
         const total_cost = calculateCost(machine.hourly_rate,lastUsage.start_time,end_time);
         const {id} = lastUsage
         // Atualizar a tabela UsageHistory
         const usageHistoryQuery = 'UPDATE UsageHistory SET end_time = ?, total_cost = ?, type_usage = ? WHERE id = ?';
-        const [result] = await connection.execute(usageHistoryQuery, [end_time, total_cost, "pos-pago", id]);
+        const [result] = await connection.execute(usageHistoryQuery, [end_time, total_cost, type, id]);
         lastUsage.end_time = end_time;
         lastUsage.total_cost = total_cost;
         

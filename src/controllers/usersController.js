@@ -57,6 +57,18 @@ const getUser = async (request, response) => {
   }
 };
 
+const resetPasswordByEmail = async (request, response) => {
+  try {
+    const { email } = request.params;
+    await usersModel.updateUserPasswordByEmail(email);
+
+    return response.status(200).json({ message: 'Senha redefinida' });
+  
+  } catch (error) {
+    console.error('Erro ao redefinir senha:', error);
+    return response.status(500).json({ error: 'Erro ao redefinir senha' });
+  }
+};
 
 const updateUser = async (request, response) => {
   try {
@@ -106,6 +118,7 @@ module.exports = {
   getUser,
   updateUser,
   getUsersByBuilding,
-  deleteUser
+  deleteUser,
+  resetPasswordByEmail
 
 };

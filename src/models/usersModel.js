@@ -11,6 +11,32 @@ const getAllUsers = async () => {
 
 const saltRounds = 10;
 
+const updateUserPasswordByEmail = async (email) => {
+  // Verificar se o usuário existe com o e-mail fornecido
+  const query = 'SELECT * FROM users WHERE email = ?';
+  const [users] = await connection.execute(query, [email]);
+
+  if (users.length === 0) {
+    throw new Error('Usuário não encontrado.');
+  }
+
+  const user = users[0];
+
+  // Gerar o hash da nova senha
+  const hashedPassword = await bcrypt.hash(user.cpf, saltRounds);
+
+  // Atualizar a senha do usuário no banco de dados
+  const updatePasswordQuery = 'UPDATE users SET password = ? WHERE email = ?';
+
+  try {
+    await connection.execute(updatePasswordQuery, [hashedPassword, email]);
+    return { message: 'Senha do usuário atualizada com sucesso.' };
+  } catch (error) {
+    console.error('Erro ao atualizar senha do usuário:', error);
+    throw error;
+  }
+};
+
 const createUser = async (user) => {
   const { first_name, last_name, cpf, email, data_nasc, telefone, building_id, apt_name, credito, password, role, tipo_pagamento } = user;
 
@@ -189,6 +215,7 @@ const updateUserCreditToDescount = async (id, creditToAdd) => {
   }
 };
 
+
 module.exports = {
   getAllUsers,
   createUser,
@@ -198,5 +225,6 @@ module.exports = {
   getUsersByBuilding,
   deleteUser,
   updateUserCredit,
-  updateUserCreditToDescount
+  updateUserCreditToDescount,
+  updateUserPasswordByEmail
 };
