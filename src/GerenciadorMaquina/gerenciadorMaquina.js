@@ -110,7 +110,7 @@ const ligarMaquinaIndustrial = async (req, res) => {
            return Utilidades.tratarBadRequest(res,"Crédito insuficiente")
         }
         // Verificar se a máquina está conectada
-        const targetConnection = verificarConexao(machine, connections);
+        const targetConnection = Utilidades.verificarConexao(machine, connections);
         if (!targetConnection) {
            return Utilidades.tratarBadRequest(res,"Máquina não está conectada!")
         }
