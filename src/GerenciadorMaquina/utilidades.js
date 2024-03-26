@@ -236,9 +236,9 @@ const { wss, connections } = require('../websocket');
             try {
                 let nodeMcuResp;
                 if (operacao === "ligar") {
-                    nodeMcuResp = await Utilidades.ligarNodeMcu(machine.idNodemcu);
+                    nodeMcuResp = await ligarNodeMcu(machine.idNodemcu);
                 } else {
-                    nodeMcuResp = await Utilidades.desligarNodemcu(machine.idNodemcu);
+                    nodeMcuResp = await desligarNodemcu(machine.idNodemcu);
                 }
                 // Tentar ligar o NodeMCU usando await
                 console.log("NodeMCU response:", nodeMcuResp);
