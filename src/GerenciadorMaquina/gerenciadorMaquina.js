@@ -169,7 +169,7 @@ const ligarMaquinaIndustrial = async (req, res) => {
 
 const desligarMaquinaRota = async (req, res) => {
     const { id_maquina, id_user } = req.body;
-    const resultado = await desligarMaquina(id_maquina, id_user);
+    const resultado = await desligarMaquina(id_maquina,res, id_user);
     console.log(resultado.message)
     
     if (resultado.success) {
@@ -179,7 +179,7 @@ const desligarMaquinaRota = async (req, res) => {
     }
 }
 
-const desligarMaquina = async (id_maquina, id_user) => {
+const desligarMaquina = async (id_maquina,res, id_user) => {
     try {
         // Buscar informações da máquina pelo ID
         const machine = await MachineModel.getMachineById(id_maquina);
