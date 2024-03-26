@@ -84,7 +84,7 @@ router.get('/disconnections/machine/:id', verifyToken, controleConexao.getDiscon
 
 // Rotas para o gerenciador de Maquina
 router.post('/gerenciadorMaquina/ligar', verifyToken, gerenciadorMaquina.ligarMaquina);
-router.post('/gerenciadorMaquina/desligar', verifyToken, gerenciadorMaquina.desligarMaquina);
+router.post('/gerenciadorMaquina/desligar', verifyToken, gerenciadorMaquina.desligarMaquinaRota);
 router.post('/gerenciadorMaquina/ligarIndustrial', verifyToken, gerenciadorMaquina.ligarMaquinaIndustrial);
 
 // Rota do MercadoPago
