@@ -36,7 +36,7 @@ const gerenciarEstadosECreditos = async () => {
                     }else{
                         // Desligar máquina
                         console.log("Desligando a máquina pois acabou o crédito do usuário com id:",user.id)
-                        const resultado = await desligarMaquina(machine.id, user.id);
+                        const resultado = await desligarMaquina(machine.id, null, user.id); // passando null como res
                         console.log(resultado.message)
                     }
                 }
@@ -44,6 +44,7 @@ const gerenciarEstadosECreditos = async () => {
         }
     }
 }
+
 
 setInterval(gerenciarEstadosECreditos, 60 * 1000); // 60 segundos * 1000 milissegundos
 
