@@ -188,7 +188,7 @@ const desligarMaquina = async (id_maquina, id_user) => {
         const user = await UserModel.getUser(id_user);
 
         // Verificar se a máquina está conectada
-        const targetConnection = verificarConexao(machine, connections);
+        const targetConnection = Utilidades.verificarConexao(machine, connections);
         if (!targetConnection) {
             return { success: false, message: "Máquina não está conectada!" };
         }
